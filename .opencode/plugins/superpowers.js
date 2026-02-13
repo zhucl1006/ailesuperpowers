@@ -1,8 +1,8 @@
 /**
- * Superpowers plugin for OpenCode.ai
+ * OpenCode.ai 的 Superpowers 外掛
  *
- * Injects superpowers bootstrap context via system prompt transform.
- * Skills are discovered via OpenCode's native skill tool from symlinked directory.
+ * 透過系統提示詞轉換注入 superpowers 啟動上下文。
+ * 技能由 OpenCode 原生 skill 工具從符號連結目錄中發現。
  */
 
 import path from 'path';
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Simple frontmatter extraction (avoid dependency on skills-core for bootstrap)
+// 簡易 frontmatter 解析（避免 bootstrap 階段依賴 skills-core）
 const extractAndStripFrontmatter = (content) => {
   const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, content };
@@ -33,7 +33,7 @@ const extractAndStripFrontmatter = (content) => {
   return { frontmatter, content: body };
 };
 
-// Normalize a path: trim whitespace, expand ~, resolve to absolute
+// 路徑標準化：去除空白、展開 ~、轉為絕對路徑
 const normalizePath = (p, homeDir) => {
   if (!p || typeof p !== 'string') return null;
   let normalized = p.trim();
@@ -52,30 +52,30 @@ export const SuperpowersPlugin = async ({ client, directory }) => {
   const envConfigDir = normalizePath(process.env.OPENCODE_CONFIG_DIR, homeDir);
   const configDir = envConfigDir || path.join(homeDir, '.config/opencode');
 
-  // Helper to generate bootstrap content
+  // 生成 bootstrap 內容的輔助函式
   const getBootstrapContent = () => {
-    // Try to load using-superpowers skill
+    // 嘗試載入 using-superpowers 技能
     const skillPath = path.join(superpowersSkillsDir, 'using-superpowers', 'SKILL.md');
     if (!fs.existsSync(skillPath)) return null;
 
     const fullContent = fs.readFileSync(skillPath, 'utf8');
     const { content } = extractAndStripFrontmatter(fullContent);
 
-    const toolMapping = `**Tool Mapping for OpenCode:**
-When skills reference tools you don't have, substitute OpenCode equivalents:
+    const toolMapping = `**OpenCode 工具映射：**
+當技能文檔引用你目前沒有的工具時，請使用 OpenCode 對應工具：
 - \`TodoWrite\` → \`update_plan\`
-- \`Task\` tool with subagents → Use OpenCode's subagent system (@mention)
-- \`Skill\` tool → OpenCode's native \`skill\` tool
-- \`Read\`, \`Write\`, \`Edit\`, \`Bash\` → Your native tools
+- \`Task\`（含子代理）→ 使用 OpenCode 子代理系統（@mention）
+- \`Skill\` 工具 → OpenCode 原生 \`skill\` 工具
+- \`Read\`、\`Write\`、\`Edit\`、\`Bash\` → 你的原生工具
 
-**Skills location:**
-Superpowers skills are in \`${configDir}/skills/superpowers/\`
-Use OpenCode's native \`skill\` tool to list and load skills.`;
+**技能目錄：**
+Superpowers 技能位於 \`${configDir}/skills/superpowers/\`
+請使用 OpenCode 原生 \`skill\` 工具列出並載入技能。`;
 
     return `<EXTREMELY_IMPORTANT>
-You have superpowers.
+你已啟用 superpowers。
 
-**IMPORTANT: The using-superpowers skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT use the skill tool to load "using-superpowers" again - that would be redundant.**
+**重要：下方已包含 using-superpowers 的完整內容，而且已經載入。你目前正在遵循它。不要再次用 skill 工具重複載入 "using-superpowers"。**
 
 ${content}
 
@@ -84,7 +84,7 @@ ${toolMapping}
   };
 
   return {
-    // Use system prompt transform to inject bootstrap (fixes #226 agent reset bug)
+    // 使用 system prompt transform 注入 bootstrap（修復 #226 代理重置問題）
     'experimental.chat.system.transform': async (_input, output) => {
       const bootstrap = getBootstrapContent();
       if (bootstrap) {

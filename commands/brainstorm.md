@@ -1,6 +1,6 @@
 ---
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores requirements and design before implementation."
-disable-model-invocation: true
+description: “您必須在任何創造性工作之前使用它 - 創建功能、構建組件、添加功能或修改行為。在實施之前探索需求和設計。”
+disable-model-invocation: 真的
 ---
 
-Invoke the superpowers:brainstorming skill and follow it exactly as presented to you
+呼叫超能力：腦力激盪技巧並完全按照呈現給您的方式進行操作

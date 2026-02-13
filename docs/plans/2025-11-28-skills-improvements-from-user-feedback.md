@@ -1,80 +1,80 @@
-# Skills Improvements from User Feedback
+# 根據使用者回饋改進技能
 
-**Date:** 2025-11-28
-**Status:** Draft
-**Source:** Two Claude instances using superpowers in real development scenarios
-
----
-
-## Executive Summary
-
-Two Claude instances provided detailed feedback from actual development sessions. Their feedback reveals **systematic gaps** in current skills that allowed preventable bugs to ship despite following the skills.
-
-**Critical insight:** These are problem reports, not just solution proposals. The problems are real; the solutions need careful evaluation.
-
-**Key themes:**
-1. **Verification gaps** - We verify operations succeed but not that they achieve intended outcomes
-2. **Process hygiene** - Background processes accumulate and interfere across subagents
-3. **Context optimization** - Subagents get too much irrelevant information
-4. **Self-reflection missing** - No prompt to critique own work before handoff
-5. **Mock safety** - Mocks can drift from interfaces without detection
-6. **Skill activation** - Skills exist but aren't being read/used
+**日期：** 2025-11-28
+**狀態：** 草案
+**來源：** 兩個在真實開發場景中使用超能力的克勞德實例
 
 ---
 
-## Problems Identified
+## 執行摘要
 
-### Problem 1: Configuration Change Verification Gap
+兩個克勞德實例提供了實際開發會議的詳細反饋。他們的反饋揭示了當前技能中的**系統性差距**，儘管遵循了技能，但仍允許可預防的錯誤出現。
 
-**What happened:**
-- Subagent tested "OpenAI integration"
-- Set `OPENAI_API_KEY` env var
-- Got status 200 responses
-- Reported "OpenAI integration working"
-- **BUT** response contained `"model": "claude-sonnet-4-20250514"` - was actually using Anthropic
+**批判性見解：** 這些是問題報告，而不僅僅是解決方案建議。問題是真實存在的；解決方案需要仔細評估。
 
-**Root cause:**
-`verification-before-completion` checks operations succeed but not that outcomes reflect intended configuration changes.
-
-**Impact:** High - False confidence in integration tests, bugs ship to production
-
-**Example failure pattern:**
-- Switch LLM provider → verify status 200 but don't check model name
-- Enable feature flag → verify no errors but don't check feature is active
-- Change environment → verify deployment succeeds but don't check environment vars
+**關鍵主題：**
+1. **驗證差距** - 我們驗證操作是否成功，但不驗證它們是否實現了預期結果
+2. **進程衛生** - 後臺進程累積並幹擾子代理
+3. **上下文優化** - 子代理程式獲取太多不相關的信息
+4. **缺乏自我反思** - 交接前沒有提示批評自己的工作
+5. **模擬安全性** - 模擬可能會在沒有偵測到的情況下偏離介面
+6. **技能啟動** - 技能存在但未被讀取/使用
 
 ---
 
-### Problem 2: Background Process Accumulation
+## 發現的問題
 
-**What happened:**
-- Multiple subagents dispatched during session
-- Each started background server processes
-- Processes accumulated (4+ servers running)
-- Stale processes still bound to ports
-- Later E2E test hit stale server with wrong config
-- Confusing/incorrect test results
+### 問題 1：配置更改驗證差距
 
-**Root cause:**
-Subagents are stateless - don't know about previous subagents' processes. No cleanup protocol.
+**發生了什麼事：**
+- 子代理測試了“OpenAI 集成”
+- 放`OPENAI_API_KEY`環境變量
+- 收到狀態 200 回覆
+- 報告“OpenAI 整合工作”
+- **但是**包含回覆`"model": "claude-sonnet-4-20250514"`- 實際上正在使用 Anthropic
 
-**Impact:** Medium-High - Tests hit wrong server, false passes/failures, debugging confusion
+**根本原因：**
+`verification-before-completion`檢查操作是否成功，但不檢查結果反映預期的配置更改。
+
+**影響：** 高 - 對集成測試的錯誤信心，將錯誤發送到生產環境
+
+**故障模式示例：**
+- 切換LLM提供者→驗證狀態200但不檢查型號名稱
+- 啟用功能標誌 → 驗證沒有錯誤，但不檢查功能是否處於活動狀態
+- 更改環境→驗證部署是否成功，但不檢查環境變量
 
 ---
 
-### Problem 3: Context Bloat in Subagent Prompts
+### 問題二：後臺流程堆積
 
-**What happened:**
-- Standard approach: give subagent full plan file to read
-- Experiment: give only task + pattern + file + verify command
-- Result: Faster, more focused, single-attempt completion more common
+**發生了什麼事：**
+- 會話期間調度多個子代理
+- 每個啟動的後臺服務器進程
+- 累積進程（4+臺服務器運行）
+- 過時的進程仍然綁定到端口
+- 後來的 E2E 測試遇到配置錯誤的陳舊服務器
+- 令人困惑/不正確的測試結果
 
-**Root cause:**
-Subagents waste tokens and attention on irrelevant plan sections.
+**根本原因：**
+子代理是無狀態的 - 不知道以前的子代理的進程。沒有清理協議。
 
-**Impact:** Medium - Slower execution, more failed attempts
+**影響：** 中-高 - 測試命中錯誤的伺服器、錯誤通過/失敗、調試混亂
 
-**What worked:**
+---
+
+### 問題 3：子代理程式提示中的上下文膨脹
+
+**發生了什麼事：**
+- 標準方法：給子代理完整的計劃文件以供讀取
+- 實驗：只給出任務+模式+文件+驗證命令
+- 結果：更快、更專注、單次嘗試完成更常見
+
+**根本原因：**
+子代理將令牌和注意力浪費在不相關的計劃部分。
+
+**影響：** 中 - 執行速度較慢，失敗嘗試較多
+
+**什麼有效：**
 ```
 You are adding a single E2E test to packnplay's test suite.
 
@@ -90,24 +90,24 @@ in its metadata should result in the container running with `--privileged` flag.
 
 ---
 
-### Problem 4: No Self-Reflection Before Handoff
+### 問題四：交接前沒有自我反思
 
-**What happened:**
-- Added self-reflection prompt: "Look at your work with fresh eyes - what could be better?"
-- Implementer for Task 5 identified failing test was due to implementation bug, not test bug
-- Traced to line 99: `strings.Join(metadata.Entrypoint, " ")` creating invalid Docker syntax
-- Without self-reflection, would have just reported "test fails" without root cause
+**發生了什麼事：**
+- 新增了自我反思提示：“用新的眼光審視你的工作——還有什麼可以更好的呢？”
+- 任務 5 的實施者發現失敗的測試是由於實施錯誤而不是測試錯誤
+- 追蹤到第99行：`strings.Join(metadata.Entrypoint, " ")`創建無效的 Docker 語法
+- 如果沒有自我反思，就會報告“測試失敗”而沒有根本原因
 
-**Root cause:**
-Implementers don't naturally step back and critique their own work before reporting completion.
+**根本原因：**
+在報告完成情況之前，實施者不會自然地退後一步並批評自己的工作。
 
-**Impact:** Medium - Bugs handed off to reviewer that implementer could have caught
+**影響：** 中 - 將實施者可能發現的錯誤移交給審閱者
 
 ---
 
-### Problem 5: Mock-Interface Drift
+### 問題 5：模擬接口漂移
 
-**What happened:**
+**發生了什麼事：**
 ```typescript
 // Interface defines close()
 interface PlatformAdapter {
@@ -124,68 +124,68 @@ vi.mock('web-adapter', () => ({
   })),
 }));
 ```
-- Tests passed
-- Runtime crashed: "adapter.cleanup is not a function"
+- 測試通過
+- 運行時崩潰：“adapter.cleanup 不是函數”
 
-**Root cause:**
-Mock derived from what buggy code calls, not from interface definition. TypeScript can't catch inline mocks with wrong method names.
+**根本原因：**
+模擬源自有缺陷的程式碼調用，而不是源自於介面定義。 TypeScript 無法擷取方法名稱錯誤的內嵌模擬。
 
-**Impact:** High - Tests give false confidence, runtime crashes
+**影響：** 高 - 測試給予錯誤的信心，運行時崩潰
 
-**Why testing-anti-patterns didn't prevent this:**
-The skill covers testing mock behavior and mocking without understanding, but not the specific pattern of "derive mock from interface, not implementation."
-
----
-
-### Problem 6: Code Reviewer File Access
-
-**What happened:**
-- Code reviewer subagent dispatched
-- Couldn't find test file: "The file doesn't appear to exist in the repository"
-- File actually exists
-- Reviewer didn't know to explicitly read it first
-
-**Root cause:**
-Reviewer prompts don't include explicit file reading instructions.
-
-**Impact:** Low-Medium - Reviews fail or incomplete
+**為什麼測試反模式不能阻止這種情況：**
+該技能涵蓋測試模擬行為和在不理解的情況下進行模擬，但不包括「從介面而不是實現派生模擬」的具體模式。
 
 ---
 
-### Problem 7: Fix Workflow Latency
+### 問題 6：Code Reviewer 檔案訪問
 
-**What happened:**
-- Implementer identifies bug during self-reflection
-- Implementer knows the fix
-- Current workflow: report → I dispatch fixer → fixer fixes → I verify
-- Extra round-trip adds latency without adding value
+**發生了什麼事：**
+- 已派遣代碼審查員子代理
+- 找不到測試文件：“該文件似乎不存在於存儲庫中”
+- 文件確實存在
+- 審稿者不知道先明確閱讀它
 
-**Root cause:**
-Rigid separation between implementer and fixer roles when implementer has already diagnosed.
+**根本原因：**
+審閱者提示不包括明確的文件讀取說明。
 
-**Impact:** Low - Latency, but no correctness issue
-
----
-
-### Problem 8: Skills Not Being Read
-
-**What happened:**
-- `testing-anti-patterns` skill exists
-- Neither human nor subagents read it before writing tests
-- Would have prevented some issues (though not all - see Problem 5)
-
-**Root cause:**
-No enforcement that subagents read relevant skills. No prompt includes skill reading.
-
-**Impact:** Medium - Skill investment wasted if not used
+**影響：** 低-中 - 審核失敗或不完整
 
 ---
 
-## Proposed Improvements
+### 問題 7：修復工作流程延遲
 
-### 1. verification-before-completion: Add Configuration Change Verification
+**發生了什麼事：**
+- 實施者在自我反思中發現錯誤
+- 實施者知道修​​​​複方法
+- 當前工作流程：報告→我派遣修復程序→修復程序修復→我驗證
+- 額外的往返會增加延遲，但不會增加價值
 
-**Add new section:**
+**根本原因：**
+當實施者已經診斷時，實施者和修復者角色之間的嚴格分離。
+
+**影響：** 低 - 延遲，但沒有正確性問題
+
+---
+
+### 問題8：技能未被閱讀
+
+**發生了什麼事：**
+- `testing-anti-patterns`技能存在
+- 在編寫測試之前，人類和子代理程式都不會閱讀它
+- 可以避免一些問題（儘管不是全部 - 請參閱問題 5）
+
+**根本原因：**
+沒有強制子代理閱讀相關技能。沒有提示包含技能閱讀。
+
+**影響：** 中 - 如果不使用技能投資就會浪費
+
+---
+
+## 改進建議
+
+### 1、verification-before-completion：新增設定變更驗證
+
+**新增部分：**
 
 ```markdown
 ## Verifying Configuration Changes
@@ -210,21 +210,21 @@ Operation succeeds because *some* valid config exists, but it's not the config y
 ### Gate Function
 
 ```
-BEFORE claiming configuration change works:
+在聲明配置更改有效之前：
 
-1. IDENTIFY: What should be DIFFERENT after this change?
-2. LOCATE: Where is that difference observable?
-   - Response field (model name, user ID)
-   - Log line (environment, provider)
-   - Behavior (feature active/inactive)
-3. RUN: Command that shows the observable difference
-4. VERIFY: Output contains expected difference
-5. ONLY THEN: Claim configuration change works
+1. 識別：此更改後應該有什麼不同？
+2. 定位：在哪裡可以觀察到這種差異？
+   - 回應欄位（型號名稱、使用者 ID）
+   - 日誌行（環境、提供者）
+   - 行為（功能激活/非激活）
+3. RUN：顯示可觀察到的差異的指令
+4. 驗證：輸出包含預期差異
+5. 只有這樣：聲明配置更改纔有效
 
-Red flags:
-  - "Request succeeded" without checking content
-  - Checking status code but not response body
-  - Verifying no errors but not positive confirmation
+危險信號：
+  - 未檢查內容“請求成功”
+  - 檢查狀態代碼但不檢查響應正文
+  - 驗證沒有錯誤但未正面確認
 ```
 
 **Why this works:**
@@ -237,17 +237,17 @@ Forces verification of INTENT, not just operation success.
 **Add new section:**
 
 ```markdown
-## Process Hygiene for E2E Tests
+## E2E 測試的流程衛生
 
-When dispatching subagents that start services (servers, databases, message queues):
+調度啟動服務（服務器、數據庫、消息隊列）的子代理時：
 
-### Problem
+### 問題
 
-Subagents are stateless - they don't know about processes started by previous subagents. Background processes persist and can interfere with later tests.
+子代理程式是無狀態的 - 它們不知道先前子代理程式啟動的進程。後臺進程持續存在並可能幹擾後續測試。
 
-### Solution
+### 解決方案
 
-**Before dispatching E2E test subagent, include cleanup in prompt:**
+**在分派 E2E 測試子代理程式之前，請在提示中包含清理：**
 
 ```
 BEFORE starting any services:
@@ -260,7 +260,7 @@ AFTER tests complete:
 2. Verify cleanup: pgrep -f "<service-pattern>" || echo "Cleanup successful"
 ```
 
-### Example
+### 例子
 
 ```
 Task: Run E2E test of API server
@@ -275,12 +275,12 @@ After tests:
 - Verify: pgrep -f 'node.*server.js' || echo 'Cleanup verified'"
 ```
 
-### Why This Matters
+### 為什麼這很重要
 
-- Stale processes serve requests with wrong config
-- Port conflicts cause silent failures
-- Process accumulation slows system
-- Confusing test results (hitting wrong server)
+- 過時的進程使用錯誤的配置來處理請求
+- 端口衝突導致靜默故障
+- 進程累積會減慢系統速度
+- 令人困惑的測試結果（擊中了錯誤的伺服器）
 ```
 
 **Trade-off analysis:**
@@ -296,21 +296,21 @@ After tests:
 
 **Before:**
 ```
-Read that task carefully from [plan-file].
+從[計劃文件]中仔細閱讀該任務。
 ```
 
 **After:**
 ```
-## Context Approaches
+## 情境方法
 
-**Full Plan (default):**
-Use when tasks are complex or have dependencies:
+**完整計劃（預設）：**
+當任務複雜或具有相依性時使用：
 ```
 Read Task N from [plan-file] carefully.
 ```
 
-**Lean Context (for independent tasks):**
-Use when task is standalone and pattern-based:
+**精實情境（針對獨立任務）：**
+當任務是獨立且基於模式時使用：
 ```
 You are implementing: [1-2 sentence task description]
 
@@ -322,29 +322,29 @@ Verification: [exact command to run]
 [Do NOT include full plan file]
 ```
 
-**Use lean context when:**
-- Task follows existing pattern (add similar test, implement similar feature)
-- Task is self-contained (doesn't need context from other tasks)
-- Pattern reference is sufficient (e.g., "follow TestE2E_FeatureOptionValidation")
+**在以下情況下使用精實環境：**
+- 任務遵循現有模式（添加類似的測試，實現類似的功能）
+- 任務是獨立的（不需要其他任務的上下文）
+- 模式參考就足夠了（e.g.，“遵循TestE2E_FeatureOptionValidation”）
 
-**Use full plan when:**
-- Task has dependencies on other tasks
-- Requires understanding of overall architecture
-- Complex logic that needs context
+**在以下情況下使用完整計劃：**
+- 任務依賴於其他任務
+- 需要了解整體架構
+- 需要上下文的複雜邏輯
 ```
 
 **Example:**
 ```
-Lean context prompt:
+精實上下文提示：
 
-"You are adding a test for privileged mode in devcontainer features.
+“您正在開發容器功能中添加特權模式測試。
 
-File: pkg/runner/e2e_test.go
-Pattern: Follow TestE2E_FeatureOptionValidation (at end of file)
-Test: Feature with `"privileged": true` in metadata results in `--privileged` flag
-Verify: go test -v ./pkg/runner -run TestE2E_FeaturePrivilegedMode -timeout 5m
+文件：pkg/runner/e2e_test.go
+模式：遵循 TestE2E_FeatureOptionValidation （在文件末尾）
+測試：特徵`"privileged": true`元數據結果`--privileged`旗幟
+驗證： go test -v ./pkg/runner -run TestE2E_FeaturePrivilegedMode -timeout 5m
 
-Report: Implementation, test results, any issues."
+報告：實施、測試結果、任何問題。 」
 ```
 
 **Why this works:**
@@ -359,24 +359,24 @@ Reduces token usage, increases focus, faster completion when appropriate.
 **Add to prompt template:**
 
 ```
-When done, BEFORE reporting back:
+完成後，在報告之前：
 
-Take a step back and review your work with fresh eyes.
+退後一步，用新的眼光審視你的工作。
 
-Ask yourself:
-- Does this actually solve the task as specified?
-- Are there edge cases I didn't consider?
-- Did I follow the pattern correctly?
-- If tests are failing, what's the ROOT CAUSE (implementation bug vs test bug)?
-- What could be better about this implementation?
+問問自己：
+- 這是否真的解決了指定的任務？
+- 有沒有我沒有考慮到的邊緣情況？
+- 我是否正確遵循了該模式？
+- 如果測試失敗，根本原因是什麼（實作錯誤與測試錯誤）？
+- 此實施還有什麼可以更好的地方？
 
-If you identify issues during this reflection, fix them now.
+如果您在反思過程中發現問題，請立即解決它們。
 
-Then report:
-- What you implemented
-- Self-reflection findings (if any)
-- Test results
-- Files changed
+然後報告：
+- 你實施了什麼
+- 自我反思發現（如果有）
+- 測試結果
+- 文件已更改
 ```
 
 **Why this works:**
@@ -394,21 +394,21 @@ Adds ~30 seconds per task, but catches issues before review.
 **Add at the beginning:**
 
 ```markdown
-## Files to Review
+## 要審查的文件
 
-BEFORE analyzing, read these files:
+在分析之前，請先閱讀這些文件：
 
-1. [List specific files that changed in the diff]
-2. [Files referenced by changes but not modified]
+1. [列出差異中更改的特定文件]
+2. [更改引用但未修改的文件]
 
-Use Read tool to load each file.
+使用讀取工具加載每個文件。
 
-If you cannot find a file:
-- Check exact path from diff
-- Try alternate locations
-- Report: "Cannot locate [path] - please verify file exists"
+如果找不到文件：
+- 檢查 diff 的確切路徑
+- 嘗試其他位置
+- 報告：“無法找到 [路徑] - 請驗證文件是否存在”
 
-DO NOT proceed with review until you've read the actual code.
+在閱讀實際代碼之前，請勿繼續進行審查。
 ```
 
 **Why this works:**
@@ -421,9 +421,9 @@ Explicit instruction prevents "file not found" issues.
 **Add new Anti-Pattern 6:**
 
 ```markdown
-## Anti-Pattern 6: Mocks Derived from Implementation
+## 反模式 6：源自實現的模擬
 
-**The violation:**
+**違規行為：**
 ```typescript
 // Code (BUGGY) calls cleanup()
 await adapter.cleanup();
@@ -439,13 +439,13 @@ interface PlatformAdapter {
 }
 ```
 
-**Why this is wrong:**
-- Mock encodes the bug into the test
-- TypeScript can't catch inline mocks with wrong method names
-- Test passes because both code and mock are wrong
-- Runtime crashes when real object is used
+**為什麼這是錯的：**
+- 模擬將錯誤編碼到測試中
+- TypeScript 無法擷取方法名稱錯誤的內嵌模擬
+- 測試通過，因為程式碼和模擬都錯誤
+- 使用真實對象時運行時崩潰
 
-**The fix:**
+**修復：**
 ```typescript
 // ✅ GOOD: Derive mock from interface
 
@@ -462,7 +462,7 @@ const mock = {
 // That failure reveals the bug BEFORE runtime
 ```
 
-### Gate Function
+### 門功能
 
 ```
 BEFORE writing any mock:
@@ -486,12 +486,12 @@ BEFORE writing any mock:
     - "The test is failing so I'll add this method to the mock"
 ```
 
-**Detection:**
+**檢測：**
 
-When you see runtime error "X is not a function" and tests pass:
-1. Check if X is mocked
-2. Compare mock methods to interface methods
-3. Look for method name mismatches
+當您看到運行時錯誤“X 不是函數”並且測試通過時：
+1. 檢查 X 是否被嘲笑
+2. 將模擬方法與接口方法進行比較
+3. 尋找方法名稱不符的地方
 ```
 
 **Why this works:**
@@ -504,17 +504,17 @@ Directly addresses the failure pattern from feedback.
 **Add to prompt template when task involves testing:**
 
 ```markdown
-BEFORE writing any tests:
+在編寫任何測試之前：
 
-1. Read testing-anti-patterns skill:
-   Use Skill tool: superpowers:testing-anti-patterns
+1. 閱讀測驗反模式技能：
+使用技能工具：superpowers:testing-anti-patterns
 
-2. Apply gate functions from that skill when:
-   - Writing mocks
-   - Adding methods to production classes
-   - Mocking dependencies
+2. 在以下情況下應用該技能的門函數：
+   - 編寫模擬
+   - 將方法添加到生產類
+   - 模擬依賴關係
 
-This is NOT optional. Tests that violate anti-patterns will be rejected in review.
+這不是可選的。違反反模式的測試將在審查中被拒絕。
 ```
 
 **Why this works:**
@@ -531,25 +531,25 @@ Adds time to each task, but prevents entire classes of bugs.
 
 **Current:**
 ```
-Subagent reports back with summary of work.
+子代理報告工作總結。
 ```
 
 **Proposed:**
 ```
-Subagent performs self-reflection, then:
+子agent進行自我反思，則：
 
-IF self-reflection identifies fixable issues:
-  1. Fix the issues
-  2. Re-run verification
-  3. Report: "Initial implementation + self-reflection fix"
+如果自我反思發現了可以解決的問題：
+  1. 修復問題
+  2. 重新運行驗證
+  3. 報告：“初步實施+自我反思修復”
 
-ELSE:
-  Report: "Implementation complete"
+別的：
+報告：“實施完成”
 
-Include in report:
-- Self-reflection findings
-- Whether fixes were applied
-- Final verification results
+包含在報告中：
+- 自我反思發現
+- 是否應用了修復
+- 最終驗證結果
 ```
 
 **Why this works:**

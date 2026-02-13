@@ -1,187 +1,182 @@
-# Persuasion Principles for Skill Design
+# 技能設計的說服原則
 
-## Overview
+＃＃ 概述
 
-LLMs respond to the same persuasion principles as humans. Understanding this psychology helps you design more effective skills - not to manipulate, but to ensure critical practices are followed even under pressure.
+法學碩士遵循與人類相同的說服原則。瞭解這種心理可以幫助您設計更有效的技能 - 不是操縱，而是確保即使在壓力下也能遵循關鍵實踐。
 
-**Research foundation:** Meincke et al. (2025) tested 7 persuasion principles with N=28,000 AI conversations. Persuasion techniques more than doubled compliance rates (33% → 72%, p < .001).
+**研究基礎：** Meincke et al. (2025) 透過 N=28,000 次人工智慧對話測試了 7 項說服原則。說服技巧使遵守率提高了一倍以上 (33% → 72%, p < .001)。
 
-## The Seven Principles
+## 七項原則
 
-### 1. Authority
-**What it is:** Deference to expertise, credentials, or official sources.
+### 1. 權威
+**它是什麼：** 對專業知識、證書或官方來源的尊重。
 
-**How it works in skills:**
-- Imperative language: "YOU MUST", "Never", "Always"
-- Non-negotiable framing: "No exceptions"
-- Eliminates decision fatigue and rationalization
+**技能如何發揮作用：**
+- 命令式語言：“你必須”、“從不”、“總是”
+- 不可協商的框架：“沒有例外”
+- 消除決策疲勞與合理化
 
-**When to use:**
-- Discipline-enforcing skills (TDD, verification requirements)
-- Safety-critical practices
-- Established best practices
+**何時使用：**
+- 紀律執行技能（TDD、驗證要求）
+- 安全關鍵實踐
+- 建立最佳實踐
 
-**Example:**
-```markdown
+**例子：**```markdown
 ✅ Write code before test? Delete it. Start over. No exceptions.
 ❌ Consider writing tests first when feasible.
 ```
 
-### 2. Commitment
-**What it is:** Consistency with prior actions, statements, or public declarations.
+### 2. 承諾
+**它是什麼：** 與之前的行動、聲明或公開聲明保持一致。
 
-**How it works in skills:**
-- Require announcements: "Announce skill usage"
-- Force explicit choices: "Choose A, B, or C"
-- Use tracking: TodoWrite for checklists
+**技能如何發揮作用：**
+- 需要公告：“公告技能使用情況”
+- 強制明確的選擇：“選擇 A、B 或 C”
+- 使用追蹤：TodoWrite 作為清單
 
-**When to use:**
-- Ensuring skills are actually followed
-- Multi-step processes
-- Accountability mechanisms
+**何時使用：**
+- 確保技能實際遵循
+- 多步驟流程
+- 問責機制
 
-**Example:**
-```markdown
+**例子：**```markdown
 ✅ When you find a skill, you MUST announce: "I'm using [Skill Name]"
 ❌ Consider letting your partner know which skill you're using.
 ```
 
-### 3. Scarcity
-**What it is:** Urgency from time limits or limited availability.
+### 3.稀缺性
+**它是什麼：** 由於時間限製或可用性有限而產生的緊迫性。
 
-**How it works in skills:**
-- Time-bound requirements: "Before proceeding"
-- Sequential dependencies: "Immediately after X"
-- Prevents procrastination
+**技能如何發揮作用：**
+- 有時間限制的要求：“在繼續之前”
+- 順序依賴：“緊接在 X 之後”
+- 防止拖延
 
-**When to use:**
-- Immediate verification requirements
-- Time-sensitive workflows
-- Preventing "I'll do it later"
+**何時使用：**
+- 立即驗證要求
+- 時間敏感的工作流程
+- 防止“我稍後再做”
 
-**Example:**
-```markdown
+**例子：**```markdown
 ✅ After completing a task, IMMEDIATELY request code review before proceeding.
 ❌ You can review code when convenient.
 ```
 
-### 4. Social Proof
-**What it is:** Conformity to what others do or what's considered normal.
+### 4. 社會證明
+**它是什麼：** 遵循他人的行為或被認為是正常的行為。
 
-**How it works in skills:**
-- Universal patterns: "Every time", "Always"
-- Failure modes: "X without Y = failure"
-- Establishes norms
+**技能如何發揮作用：**
+- 通用模式：“每次”、“總是”
+- 故障模式：“X 沒有 Y = 故障”
+- 建立規範
 
-**When to use:**
-- Documenting universal practices
-- Warning about common failures
-- Reinforcing standards
+**何時使用：**
+- 記錄普遍做法
+- 關於常見故障的警告
+- 強化標準
 
-**Example:**
-```markdown
+**例子：**```markdown
 ✅ Checklists without TodoWrite tracking = steps get skipped. Every time.
 ❌ Some people find TodoWrite helpful for checklists.
 ```
 
-### 5. Unity
-**What it is:** Shared identity, "we-ness", in-group belonging.
+### 5.團結
+**它是什麼：** 共享身份、“我們”、羣體歸屬感。
 
-**How it works in skills:**
-- Collaborative language: "our codebase", "we're colleagues"
-- Shared goals: "we both want quality"
+**技能如何發揮作用：**
+- 協作語言：“我們的代碼庫”、“我們是同事”
+- 共同目標：“我們都想要質量”
 
-**When to use:**
-- Collaborative workflows
-- Establishing team culture
-- Non-hierarchical practices
+**何時使用：**
+- 協作工作流程
+- 建立團隊文化
+- 無等級制度的實踐
 
-**Example:**
-```markdown
+**例子：**```markdown
 ✅ We're colleagues working together. I need your honest technical judgment.
 ❌ You should probably tell me if I'm wrong.
 ```
 
-### 6. Reciprocity
-**What it is:** Obligation to return benefits received.
+### 6.互惠
+**它是什麼：** 返還收到的福利的義務。
 
-**How it works:**
-- Use sparingly - can feel manipulative
-- Rarely needed in skills
+**它是如何工作的：**
+- 謹慎使用 - 會感到被操縱
+- 很少需要的技能
 
-**When to avoid:**
-- Almost always (other principles more effective)
+**何時避免：**
+- 幾乎總是（其他原則更有效）
 
-### 7. Liking
-**What it is:** Preference for cooperating with those we like.
+### 7. 喜歡
+**它是什麼：** 偏好與我們喜歡的人合作。
 
-**How it works:**
-- **DON'T USE for compliance**
-- Conflicts with honest feedback culture
-- Creates sycophancy
+**它是如何工作的：**
+- **請勿用於合規性**
+- 與誠實反饋文化的衝突
+- 製造阿諛奉承
 
-**When to avoid:**
-- Always for discipline enforcement
+**何時避免：**
+- 始終遵守紀律
 
-## Principle Combinations by Skill Type
+## 按技能類型劃分的原則組合
 
-| Skill Type | Use | Avoid |
+|技能類型 |使用 |避免 |
 |------------|-----|-------|
-| Discipline-enforcing | Authority + Commitment + Social Proof | Liking, Reciprocity |
-| Guidance/technique | Moderate Authority + Unity | Heavy authority |
-| Collaborative | Unity + Commitment | Authority, Liking |
-| Reference | Clarity only | All persuasion |
+|紀律執行 |權威+承諾+社會證明|喜歡，互惠|
+|指導/技術|適度權威+團結|重磅權威|
+|協作|團結+承諾|權威、喜歡|
+|參考|僅清晰度 |全部說服|
 
-## Why This Works: The Psychology
+## 為什麼這有效：心理學
 
-**Bright-line rules reduce rationalization:**
-- "YOU MUST" removes decision fatigue
-- Absolute language eliminates "is this an exception?" questions
-- Explicit anti-rationalization counters close specific loopholes
+**明確的規則減少了合理化：**
+- “你必須”消除決策疲勞
+- 絕對語言消除了“這是一個例外嗎？”問題
+- 明確的反合理化反制措施堵住了特定的漏洞
 
-**Implementation intentions create automatic behavior:**
-- Clear triggers + required actions = automatic execution
-- "When X, do Y" more effective than "generally do Y"
-- Reduces cognitive load on compliance
+**實施意圖創造自動行為：**
+- 明確的觸發器+所需的操作=自動執行
+- “當 X 時，做 Y”比“通常做 Y”更有效
+- 減少合規認知負擔
 
-**LLMs are parahuman:**
-- Trained on human text containing these patterns
-- Authority language precedes compliance in training data
-- Commitment sequences (statement → action) frequently modeled
-- Social proof patterns (everyone does X) establish norms
+**法學碩士是超人類：**
+- 對包含這些模式的人類文本進行訓練
+- 訓練資料中的權威語言優先於合規性
+- 經常建模的承諾序列（陳述→行動）
+- 社會證明模式（每個人都做 X）建立規範
 
-## Ethical Use
+## 道德使用
 
-**Legitimate:**
-- Ensuring critical practices are followed
-- Creating effective documentation
-- Preventing predictable failures
+**合法：**
+- 確保遵循關鍵實踐
+- 創建有效的文檔
+- 防止可預測的故障
 
-**Illegitimate:**
-- Manipulating for personal gain
-- Creating false urgency
-- Guilt-based compliance
+**非法：**
+- 操縱謀取個人利益
+- 製造虛假的緊迫感
+- 基於內疚的合規
 
-**The test:** Would this technique serve the user's genuine interests if they fully understood it?
+**測試：** 如果用戶完全理解該技術，它是否能滿足用戶的真正興趣？
 
-## Research Citations
+## 研究引用
 
-**Cialdini, R. B. (2021).** *Influence: The Psychology of Persuasion (New and Expanded).* Harper Business.
-- Seven principles of persuasion
-- Empirical foundation for influence research
+**Cialdini, R. B. (2021)。 ** *影響：說服心理學（新的和擴展的）。 * 哈潑商業雜誌。
+- 七大說服原則
+- 影響力研究的實證基礎
 
-**Meincke, L., Shapiro, D., Duckworth, A. L., Mollick, E., Mollick, L., & Cialdini, R. (2025).** Call Me A Jerk: Persuading AI to Comply with Objectionable Requests. University of Pennsylvania.
-- Tested 7 principles with N=28,000 LLM conversations
-- Compliance increased 33% → 72% with persuasion techniques
-- Authority, commitment, scarcity most effective
-- Validates parahuman model of LLM behavior
+**Meincke, L.、Shapiro, D.、Duckworth, A. L.、Mollick, E.、Mollick, L. 與 Cialdini, R. (2025)。 ** 叫我混蛋：說服 AI 遵守令人反感的請求。賓州大學。
+- 通過 N=28,000 次法學碩士對話測試了 7 項原則
+- 透過說服技巧，依從性提高了 33% → 72%
+- 權威、承諾、稀少最有效
+- 驗證法學碩士行為的超人類模型
 
-## Quick Reference
+## 快速參考
 
-When designing a skill, ask:
+設計技能時，請詢問：
 
-1. **What type is it?** (Discipline vs. guidance vs. reference)
-2. **What behavior am I trying to change?**
-3. **Which principle(s) apply?** (Usually authority + commitment for discipline)
-4. **Am I combining too many?** (Don't use all seven)
-5. **Is this ethical?** (Serves user's genuine interests?)
+1. **它是什麼類型？ **（紀律、指導、參考）
+2. **我想改變什麼行為？ **
+3. **適用哪些原則？ **（通常是權威+紀律承諾）
+4. **我是否組合了太多？ **（不要使用全部七個）
+5. **這符合道德嗎？ **（服務使用者的真正利益嗎？）

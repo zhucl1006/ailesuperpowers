@@ -76,6 +76,7 @@ cd "$OUTPUT_DIR/project"
 claude -p "$PROMPT" \
   --plugin-dir "$PLUGIN_DIR" \
   --dangerously-skip-permissions \
+  --verbose \
   --output-format stream-json \
   > "$LOG_FILE" 2>&1 || true
 

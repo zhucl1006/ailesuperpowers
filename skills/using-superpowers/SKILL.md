@@ -1,27 +1,29 @@
 ---
 name: using-superpowers
-description: Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions
+description: 開始任何對話時使用 - 確定如何尋找和使用技能，要求在任何回應（包括澄清問題）之前調用技能工具
 ---
 
 <EXTREMELY-IMPORTANT>
-If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
+如果你認為某個技能有哪怕 1% 的機率適用於當前任務，你就**必須**先調用該技能。
 
-IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
+如果有技能適用，你**沒有選擇權**，必須使用它。
 
-This is not negotiable. This is not optional. You cannot rationalize your way out of this.
+這不是建議，而是硬性規則。不要先動手再補技能。
 </EXTREMELY-IMPORTANT>
 
-## How to Access Skills
+## 如何獲取技能
 
-**In Claude Code:** Use the `Skill` tool. When you invoke a skill, its content is loaded and presented to you—follow it directly. Never use the Read tool on skill files.
+**在克勞德代碼中：** 使用`Skill`工具。當您調用一項技能時，其內容將被加載並呈現給您 - 直接遵循它。切勿對技能文件使用讀取工具。
 
-**In other environments:** Check your platform's documentation for how skills are loaded.
+**在其他環境中：** 檢查您的平臺文件以瞭解如何載入技能。
 
-# Using Skills
+# 使用技巧
 
-## The Rule
+## 規則
 
-**Invoke relevant or requested skills BEFORE any response or action.** Even a 1% chance a skill might apply means that you should invoke the skill to check. If an invoked skill turns out to be wrong for the situation, you don't need to use it.
+**在任何回應或操作之前，先調用相關或被點名請求的技能。**  
+即使某項技能只有 1% 可能適用，也要先調用檢查。  
+如果調用後確認不適用，可以不使用；但不能跳過調用步驟。
 
 ```dot
 digraph skill_flow {
@@ -45,43 +47,43 @@ digraph skill_flow {
 }
 ```
 
-## Red Flags
+## 危險信號
 
-These thoughts mean STOP—you're rationalizing:
+這些想法意味著停止——你正在合理化：
 
-| Thought | Reality |
+|思想|現實|
 |---------|---------|
-| "This is just a simple question" | Questions are tasks. Check for skills. |
-| "I need more context first" | Skill check comes BEFORE clarifying questions. |
-| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
-| "I can check git/files quickly" | Files lack conversation context. Check for skills. |
-| "Let me gather information first" | Skills tell you HOW to gather information. |
-| "This doesn't need a formal skill" | If a skill exists, use it. |
-| "I remember this skill" | Skills evolve. Read current version. |
-| "This doesn't count as a task" | Action = task. Check for skills. |
-| "The skill is overkill" | Simple things become complex. Use it. |
-| "I'll just do this one thing first" | Check BEFORE doing anything. |
-| "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
-| "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
+| “這只是一個簡單的問題”|問題就是任務。檢查技能。 |
+| “我首先需要更多背景信息” |技能檢查先於澄清問題。 |
+| 「讓我先探索一下程式碼庫」|技能告訴您如何探索。先檢查一下。 |
+| “我可以快速檢查 git/files”|文件缺乏上下文上下文。檢查技巧。 |
+| “我先收集一下信息”|技能告訴您如何收集信息。 |
+| 「這不需要正式的技能」 |如果存在技能，就使用它。 |
+| “我記得這個技能”|技能不斷發展。閱讀當前版本。 |
+| 「這不算是任務」|行動=任務。檢查技能。 |
+| 「技能太過分了」|簡單的事情變得複雜。使用它。 |
+| “我先做一件事” |做任何事情之前先檢查一下。 |
+| 「這感覺很有成效」 |無紀律的行動會浪費時間。技能可以防止這種情況發生。 |
+| 「我知道這代表什麼」 | 瞭解概念≠使用技能。調用它。 |
 
-## Skill Priority
+## 技能優先
 
-When multiple skills could apply, use this order:
+當可以應用多種技能時，請使用以下順序：
 
-1. **Process skills first** (brainstorming, debugging) - these determine HOW to approach the task
-2. **Implementation skills second** (frontend-design, mcp-builder) - these guide execution
+1. **首先是流程技能**（頭腦風暴、調試）——這些決定瞭如何處理任務
+2. **實施技巧第二**（前端設計、mcp-builder）-這些指導執行
 
-"Let's build X" → brainstorming first, then implementation skills.
-"Fix this bug" → debugging first, then domain-specific skills.
+「讓我們眼前X」→先集思廣益，然後是實作技巧。
+“修復此錯誤”→ 首先調試，然後再進行特定領域的技能。
 
-## Skill Types
+## 技能類型
 
-**Rigid** (TDD, debugging): Follow exactly. Don't adapt away discipline.
+**嚴格**（TDD、調試）：嚴格遵循。不要適應紀律。
 
-**Flexible** (patterns): Adapt principles to context.
+**靈活**（模式）：根據具體情況調整原則。
 
-The skill itself tells you which.
+技能本身會告訴你哪個。
 
-## User Instructions
+## 用戶說明
 
-Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
+說明說的是“做什麼”，而不是“如何做”。 「新增 X」或「修復 Y」並不意味著跳過工作流程。

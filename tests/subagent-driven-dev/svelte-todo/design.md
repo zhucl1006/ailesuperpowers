@@ -1,20 +1,20 @@
-# Svelte Todo List - Design
+# Svelte Todo 清單 - 設計
 
-## Overview
+## 概述
 
-A simple todo list application built with Svelte. Supports creating, completing, and deleting todos with localStorage persistence.
+使用 Svelte 構建的簡單待辦事項列表應用程序。支持使用 localStorage 持久性創建、完成和刪除待辦事項。
 
-## Features
+## 特徵
 
-- Add new todos
-- Mark todos as complete/incomplete
-- Delete todos
-- Filter by: All / Active / Completed
-- Clear all completed todos
-- Persist to localStorage
-- Show count of remaining items
+- 新增的待辦事項
+- 將待辦事項標記為完成/不完整
+- 刪除待辦事項
+- 篩選條件：全部/活動/已完成
+- 清除所有已完成的待辦事項
+- 儲存到本地存儲
+- 顯示剩餘項目數
 
-## User Interface
+## 使用者介面
 
 ```
 ┌─────────────────────────────────────────┐
@@ -31,7 +31,7 @@ A simple todo list application built with Svelte. Supports creating, completing,
 └─────────────────────────────────────────┘
 ```
 
-## Components
+## 成分
 
 ```
 src/
@@ -45,7 +45,7 @@ src/
     storage.ts         # localStorage persistence
 ```
 
-## Data Model
+## 資料模型
 
 ```typescript
 interface Todo {
@@ -57,14 +57,14 @@ interface Todo {
 type Filter = 'all' | 'active' | 'completed';
 ```
 
-## Acceptance Criteria
+## 驗收標準
 
-1. Can add a todo by typing and pressing Enter or clicking Add
-2. Can toggle todo completion by clicking checkbox
-3. Can delete a todo by clicking X button
-4. Filter buttons show correct subset of todos
-5. "X items left" shows count of incomplete todos
-6. "Clear completed" removes all completed todos
-7. Todos persist across page refresh (localStorage)
-8. Empty state shows helpful message
-9. All tests pass
+1. 可以透過鍵入並按 Enter 或按一下「新增」來新增待辦事項
+2. 可以通過單擊複選框來切換待辦事項完成情況
+3. 可以透過點擊 X 按鈕刪除待辦事項
+4. 篩選按鈕顯示待辦事項的正確子集
+5. “剩餘 X 項”顯示未完成的待辦事項的數量
+6. “清除已完成”刪除所有已完成的待辦事項
+7. 待辦事項在頁面刷新後保持不變（localStorage）
+8. 空狀態顯示有用的消息
+9. 所有測試均通過

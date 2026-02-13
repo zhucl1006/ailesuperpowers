@@ -1,16 +1,16 @@
-# Testing Anti-Patterns
+# 測試反模式
 
-**Load this reference when:** writing or changing tests, adding mocks, or tempted to add test-only methods to production code.
+**在以下情況下載入此參考：** 編寫或更改測試、新增模擬或試圖將僅測試方法新增至生產程式碼。
 
-## Overview
+## 概述
 
-Tests must verify real behavior, not mock behavior. Mocks are a means to isolate, not the thing being tested.
+測試必須驗證真實行為，而不是模擬行為。模擬是一種隔離手段，而不是被測試的東西。
 
-**Core principle:** Test what the code does, not what the mocks do.
+**核心原則：** 測試程式碼做什麼，而不是模擬做什麼。
 
-**Following strict TDD prevents these anti-patterns.**
+**遵循嚴格的TDD可以防止這些反模式。 **
 
-## The Iron Laws
+## 鐵律
 
 ```
 1. NEVER test mock behavior
@@ -18,9 +18,9 @@ Tests must verify real behavior, not mock behavior. Mocks are a means to isolate
 3. NEVER mock without understanding dependencies
 ```
 
-## Anti-Pattern 1: Testing Mock Behavior
+## 反模式 1：測試模擬行為
 
-**The violation:**
+**違規行為：**
 ```typescript
 // ❌ BAD: Testing that the mock exists
 test('renders sidebar', () => {
@@ -29,14 +29,14 @@ test('renders sidebar', () => {
 });
 ```
 
-**Why this is wrong:**
-- You're verifying the mock works, not that the component works
-- Test passes when mock is present, fails when it's not
-- Tells you nothing about real behavior
+**為什麼這是錯的：**
+- 您正在驗證模擬是否有效，而不是元件是否有效
+- 當模擬存在時測試通過，當模擬不存在時測試失敗
+- 不會告訴您任何有關真實行為的信息
 
-**your human partner's correction:** "Are we testing the behavior of a mock?"
+**你的人類夥伴的更正：**“我們正在測試模擬的行為嗎？”
 
-**The fix:**
+**修復：**
 ```typescript
 // ✅ GOOD: Test real component or don't mock it
 test('renders sidebar', () => {
@@ -48,7 +48,7 @@ test('renders sidebar', () => {
 // Don't assert on the mock - test Page's behavior with sidebar present
 ```
 
-### Gate Function
+### 門功能
 
 ```
 BEFORE asserting on any mock element:
@@ -60,9 +60,9 @@ BEFORE asserting on any mock element:
   Test real behavior instead
 ```
 
-## Anti-Pattern 2: Test-Only Methods in Production
+## 反模式 2：生產中的僅測試方法
 
-**The violation:**
+**違規行為：**
 ```typescript
 // ❌ BAD: destroy() only used in tests
 class Session {
@@ -76,13 +76,13 @@ class Session {
 afterEach(() => session.destroy());
 ```
 
-**Why this is wrong:**
-- Production class polluted with test-only code
-- Dangerous if accidentally called in production
-- Violates YAGNI and separation of concerns
-- Confuses object lifecycle with entity lifecycle
+**為什麼這是錯的：**
+- 生產類被僅測試代碼污染
+- 如果在生產中意外調用會很危險
+- 違反 YAGNI 和關注點分離
+- 混淆了物件生命週期和實體生命週期
 
-**The fix:**
+**修復：**
 ```typescript
 // ✅ GOOD: Test utilities handle test cleanup
 // Session has no destroy() - it's stateless in production
@@ -99,7 +99,7 @@ export async function cleanupSession(session: Session) {
 afterEach(() => cleanupSession(session));
 ```
 
-### Gate Function
+### 門功能
 
 ```
 BEFORE adding any method to production class:
@@ -115,9 +115,9 @@ BEFORE adding any method to production class:
     STOP - Wrong class for this method
 ```
 
-## Anti-Pattern 3: Mocking Without Understanding
+## 反模式 3：不理解的嘲笑
 
-**The violation:**
+**違規行為：**
 ```typescript
 // ❌ BAD: Mock breaks test logic
 test('detects duplicate server', () => {
@@ -131,12 +131,12 @@ test('detects duplicate server', () => {
 });
 ```
 
-**Why this is wrong:**
-- Mocked method had side effect test depended on (writing config)
-- Over-mocking to "be safe" breaks actual behavior
-- Test passes for wrong reason or fails mysteriously
+**為什麼這是錯的：**
+- 模擬方法有依賴於副作用測試（編寫配置）
+- 為了「安全」而過度嘲笑會破壞實際行為
+- 測試因錯誤原因通過或神祕失敗
 
-**The fix:**
+**修復：**
 ```typescript
 // ✅ GOOD: Mock at correct level
 test('detects duplicate server', () => {
@@ -148,7 +148,7 @@ test('detects duplicate server', () => {
 });
 ```
 
-### Gate Function
+### 門功能
 
 ```
 BEFORE mocking any method:
@@ -174,9 +174,9 @@ BEFORE mocking any method:
     - Mocking without understanding the dependency chain
 ```
 
-## Anti-Pattern 4: Incomplete Mocks
+## 反模式 4：不完整的模擬
 
-**The violation:**
+**違規行為：**
 ```typescript
 // ❌ BAD: Partial mock - only fields you think you need
 const mockResponse = {
@@ -188,15 +188,15 @@ const mockResponse = {
 // Later: breaks when code accesses response.metadata.requestId
 ```
 
-**Why this is wrong:**
-- **Partial mocks hide structural assumptions** - You only mocked fields you know about
-- **Downstream code may depend on fields you didn't include** - Silent failures
-- **Tests pass but integration fails** - Mock incomplete, real API complete
-- **False confidence** - Test proves nothing about real behavior
+**為什麼這是錯的：**
+- **部分模擬隱藏了結構假設** - 您只模擬了您知道的字段
+- **下游程式碼可能取決於您未包含的欄位** - 無提示失敗
+- **測試但整合失敗** - 模擬不完整，真實API完整
+- **虛假信心** - 測試無法證明真實行為
 
-**The Iron Rule:** Mock the COMPLETE data structure as it exists in reality, not just fields your immediate test uses.
+**鐵律：** 模擬現實中存在的完整資料結構，而不僅僅是您直接測試使用的欄位。
 
-**The fix:**
+**修復：**
 ```typescript
 // ✅ GOOD: Mirror real API completeness
 const mockResponse = {
@@ -207,7 +207,7 @@ const mockResponse = {
 };
 ```
 
-### Gate Function
+### 門功能
 
 ```
 BEFORE creating mock responses:
@@ -225,21 +225,21 @@ BEFORE creating mock responses:
   If uncertain: Include all documented fields
 ```
 
-## Anti-Pattern 5: Integration Tests as Afterthought
+## 反模式 5：事後才考慮整合測試
 
-**The violation:**
+**違規行為：**
 ```
 ✅ Implementation complete
 ❌ No tests written
 "Ready for testing"
 ```
 
-**Why this is wrong:**
-- Testing is part of implementation, not optional follow-up
-- TDD would have caught this
-- Can't claim complete without tests
+**為什麼這是錯的：**
+- 測試是實施的一部分，而不是可選的後續行動
+- TDD 會發現這個
+- 沒有測試就不能聲稱完整
 
-**The fix:**
+**修復：**
 ```
 TDD cycle:
 1. Write failing test
@@ -248,52 +248,52 @@ TDD cycle:
 4. THEN claim complete
 ```
 
-## When Mocks Become Too Complex
+## 當模擬變得太複雜時
 
-**Warning signs:**
-- Mock setup longer than test logic
-- Mocking everything to make test pass
-- Mocks missing methods real components have
-- Test breaks when mock changes
+**警告標誌：**
+- 模擬設置比測試邏輯長
+- 模擬一切以使測試通過
+- 模擬缺少真實組件所具有的方法
+- 當模擬更改時測試會中斷
 
-**your human partner's question:** "Do we need to be using a mock here?"
+**你的人類夥伴的問題：**“我們需要在這裡使用模擬嗎？”
 
-**Consider:** Integration tests with real components often simpler than complex mocks
+**考慮：** 與真實組件的整合測試通常比複雜的模擬更簡單
 
-## TDD Prevents These Anti-Patterns
+## TDD 可以阻止這些反模式
 
-**Why TDD helps:**
-1. **Write test first** → Forces you to think about what you're actually testing
-2. **Watch it fail** → Confirms test tests real behavior, not mocks
-3. **Minimal implementation** → No test-only methods creep in
-4. **Real dependencies** → You see what the test actually needs before mocking
+**為什麼TDD有幫助：**
+1. **首先編寫測試** → 迫使您思考您實際測試的內容
+2. **看著它失敗** → 確認測試測試真實行為，而不是模擬
+3. **最小實現** → 沒有純測試方法
+4. **真正的依賴關係** → 在模擬之前您會看到測試實際上需要什麼
 
-**If you're testing mock behavior, you violated TDD** - you added mocks without watching test fail against real code first.
+**如果您正在測試模擬行為，則違反了TDD** - 您新增了模擬，而沒有先觀察真實計劃碼的測試失敗。
 
-## Quick Reference
+## 快速參考
 
-| Anti-Pattern | Fix |
+|反模式 |修復 |
 |--------------|-----|
-| Assert on mock elements | Test real component or unmock it |
-| Test-only methods in production | Move to test utilities |
-| Mock without understanding | Understand dependencies first, mock minimally |
-| Incomplete mocks | Mirror real API completely |
-| Tests as afterthought | TDD - tests first |
-| Over-complex mocks | Consider integration tests |
+|對模擬元素進行斷言 |測試真實組件或解鎖它 |
+|生產中的僅測試方法 |移至測試實用程式 |
+|沒有理解的嘲笑|先了解依賴關係，最小化模擬 |
+|不完整的模擬|完全鏡像真實API |
+|事後才進行測驗| TDD - 先測試|
+|過於複雜的模擬 |考慮整合測試 |
 
-## Red Flags
+## 危險信號
 
-- Assertion checks for `*-mock` test IDs
-- Methods only called in test files
-- Mock setup is >50% of test
-- Test fails when you remove mock
-- Can't explain why mock is needed
-- Mocking "just to be safe"
+- 斷言檢查`*-mock`測試ID
+- 僅在測試檔案中呼叫的方法
+- 模擬設定 > 測試的 50%
+- 刪除模擬時測試失敗
+- 無法解釋為什麼需要模擬
+- 嘲笑“只是為了安全”
 
-## The Bottom Line
+## 底線
 
-**Mocks are tools to isolate, not things to test.**
+**模擬是隔離的工具，而不是測試的東西。 **
 
-If TDD reveals you're testing mock behavior, you've gone wrong.
+如果 TDD 顯示您正在測試模擬行為，那麼您就錯了。
 
-Fix: Test real behavior or question why you're mocking at all.
+修復：測試真實行為或質疑你為什麼要嘲笑。

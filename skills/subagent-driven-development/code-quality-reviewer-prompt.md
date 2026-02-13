@@ -1,10 +1,10 @@
-# Code Quality Reviewer Prompt Template
+# 代碼質量審核員提示模板
 
-Use this template when dispatching a code quality reviewer subagent.
+分派代碼質量審核員子代理時使用此模板。
 
-**Purpose:** Verify implementation is well-built (clean, tested, maintainable)
+**目的：** 驗證實施是否建置良好（乾淨、經過測試、可維護）
 
-**Only dispatch after spec compliance review passes.**
+**僅在規格合規性審核通過後纔出貨。 **
 
 ```
 Task tool (superpowers:code-reviewer):
@@ -17,4 +17,4 @@ Task tool (superpowers:code-reviewer):
   DESCRIPTION: [task summary]
 ```
 
-**Code reviewer returns:** Strengths, Issues (Critical/Important/Minor), Assessment
+**代碼審查員返回：** 優勢、問題（關鍵/重要/次要）、評估

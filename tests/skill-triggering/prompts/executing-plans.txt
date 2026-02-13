@@ -1,1 +1,1 @@
-I have a plan document at docs/plans/2024-01-15-auth-system.md that needs to be executed. Please implement it.
+我有一份位於 docs/plans/2024-01-15-auth-system.md 的實施計畫需要執行，請使用 executing-plans 技能來落地它。

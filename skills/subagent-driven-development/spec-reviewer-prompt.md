@@ -1,8 +1,8 @@
-# Spec Compliance Reviewer Prompt Template
+# 規範合規性審核員提示模板
 
-Use this template when dispatching a spec compliance reviewer subagent.
+派遣規範合規性審核員子代理時，請使用此模板。
 
-**Purpose:** Verify implementer built what was requested (nothing more, nothing less)
+**目的：** 驗證實施者建構了所要求的內容（僅此而已）
 
 ```
 Task tool (general-purpose):

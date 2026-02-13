@@ -1,15 +1,15 @@
 ---
 name: subagent-driven-development
-description: Use when executing implementation plans with independent tasks in the current session
+description: 在當前會話中執行具有獨立任務的實施計劃時使用
 ---
 
-# Subagent-Driven Development
+# 子代理驅動的開發
 
-Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.
+通過為每個任務派遣新的子代理來執行計劃，每個任務之後進行兩階段審查：首先進行規範合規性審查，然後進行代碼質量審查。
 
-**Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
+**核心原則：** 每個任務新鮮的子代理+兩階段審查（規格然後質量）=高質量，快速迭代
 
-## When to Use
+## 何時使用
 
 ```dot
 digraph when_to_use {
@@ -29,13 +29,13 @@ digraph when_to_use {
 }
 ```
 
-**vs. Executing Plans (parallel session):**
-- Same session (no context switch)
-- Fresh subagent per task (no context pollution)
-- Two-stage review after each task: spec compliance first, then code quality
-- Faster iteration (no human-in-loop between tasks)
+**與。執行計劃（平行會議）：**
+- 同一會話（無上下文切換）
+- 每個任務都有新的子代理（無上下文污染）
+- 每項任務後進行兩階段審查：首先是規範合規性，然後是程式碼品質
+- 更快的迭代（任務之間沒有人在循環）
 
-## The Process
+## 流程
 
 ```dot
 digraph process {
@@ -82,13 +82,13 @@ digraph process {
 }
 ```
 
-## Prompt Templates
+## 提示模板
 
-- `./implementer-prompt.md` - Dispatch implementer subagent
-- `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
-- `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
+- `./implementer-prompt.md`- 調度實施者子代理
+- `./spec-reviewer-prompt.md`- 派遣規範合規審查員子代理
+- `./code-quality-reviewer-prompt.md`- 派遣代碼質量審核員子代理
 
-## Example Workflow
+## 示例工作流程
 
 ```
 You: I'm using Subagent-Driven Development to execute this plan.
@@ -164,79 +164,79 @@ Final reviewer: All requirements met, ready to merge
 Done!
 ```
 
-## Advantages
+## 優點
 
-**vs. Manual execution:**
-- Subagents follow TDD naturally
-- Fresh context per task (no confusion)
-- Parallel-safe (subagents don't interfere)
-- Subagent can ask questions (before AND during work)
+**與。手動執行：**
+- 子代理自然地遵循TDD
+- 每個任務都有新鮮的背景（沒有混淆）
+- 並行安全（子代理不幹擾）
+- 子代理可以提問（工作之前和工作期間）
 
-**vs. Executing Plans:**
-- Same session (no handoff)
-- Continuous progress (no waiting)
-- Review checkpoints automatic
+**與。執行計劃：**
+- 同一會話（無切換）
+- 持續進步（無需等待）
+- 自動審查檢查點
 
-**Efficiency gains:**
-- No file reading overhead (controller provides full text)
-- Controller curates exactly what context is needed
-- Subagent gets complete information upfront
-- Questions surfaced before work begins (not after)
+**效率提升：**
+- 無檔案讀取開銷（控制器提供全文）
+- 控制器準確地規劃所需的上下文
+- 子代理預先取得完整資訊
+- 問題在工作開始之前（而不是之後）出現
 
-**Quality gates:**
-- Self-review catches issues before handoff
-- Two-stage review: spec compliance, then code quality
-- Review loops ensure fixes actually work
-- Spec compliance prevents over/under-building
-- Code quality ensures implementation is well-built
+**質量門：**
+- 移交前自我審查發現問題
+- 兩階段審查：規範合規性，然後是代碼質量
+- 審查循環確保修復確實有效
+- 符合規範可防止過度建設/建設不足
+- 代碼品質確保實施良好
 
-**Cost:**
-- More subagent invocations (implementer + 2 reviewers per task)
-- Controller does more prep work (extracting all tasks upfront)
-- Review loops add iterations
-- But catches issues early (cheaper than debugging later)
+**成本：**
+- 更多子代理呼叫（每個任務的實施者 + 2 個審閱者）
+- 控制器做更多的準備工作（預先提取所有任務）
+- 審查循環添加迭代
+- 但儘早發現問題（比稍後調試便宜）
 
-## Red Flags
+## 危險信號
 
-**Never:**
-- Start implementation on main/master branch without explicit user consent
-- Skip reviews (spec compliance OR code quality)
-- Proceed with unfixed issues
-- Dispatch multiple implementation subagents in parallel (conflicts)
-- Make subagent read plan file (provide full text instead)
-- Skip scene-setting context (subagent needs to understand where task fits)
-- Ignore subagent questions (answer before letting them proceed)
-- Accept "close enough" on spec compliance (spec reviewer found issues = not done)
-- Skip review loops (reviewer found issues = implementer fixes = review again)
-- Let implementer self-review replace actual review (both are needed)
-- **Start code quality review before spec compliance is ✅** (wrong order)
-- Move to next task while either review has open issues
+**絕不：**
+- 在使用者明確同意的情況下開始在 main/master 分支上實施
+- 跳過審查（規範合規性或程式碼品質）
+- 繼續處理未解決的問題
+- 並行調度多個實施子代理（衝突）
+- 讓子代理程式讀取計劃檔案（改為提供全文）
+- 跳過場景設定上下文（子代理程式需要了解任務適合的位置）
+- 忽略子代理問題（在繼續之前回答）
+- 接受規範合規性“足夠接近”（規範審核者發現問題=未完成）
+- 跳過審核循環（審核者發現問題 = 實施者修復 = 再次審核）
+- 讓實施者自我審查取代實際審查（兩者都需要）
+- **在規範合規性為✅**之前開始代碼質量審查（順序錯誤）
+- 當任一審核有未解決的問題時移至下一個任務
 
-**If subagent asks questions:**
-- Answer clearly and completely
-- Provide additional context if needed
-- Don't rush them into implementation
+**如果子代理提出問題：**
+- 回答清楚、完整
+- 如果需要，提供額外的上下文
+- 不要急於實施
 
-**If reviewer finds issues:**
-- Implementer (same subagent) fixes them
-- Reviewer reviews again
-- Repeat until approved
-- Don't skip the re-review
+**如果審閱者發現問題：**
+- 實施者（同一子代理）修復它們
+- 審稿者再次審稿
+- 重複直至獲得批准
+- 不要跳過重新審核
 
-**If subagent fails task:**
-- Dispatch fix subagent with specific instructions
-- Don't try to fix manually (context pollution)
+**如果子代理任務失敗：**
+- 調度帶有特定說明的修復子代理
+- 不要嘗試手動修復（上下文污染）
 
-## Integration
+## 一體化
 
-**Required workflow skills:**
-- **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:requesting-code-review** - Code review template for reviewer subagents
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+**所需的工作流程技能：**
+- **超級能力：使用-git-worktrees** - 必需：在開始之前設置隔離的工作區
+- **超級大國：寫作計劃** - 創建該技能執行的計劃
+- **superpowers:requesting-code-review** - 審閱者子代理方案的方案碼審閱模板
+- **超級大國：完成開發分支** - 在完成所有任務後完成開發
 
-**Subagents should use:**
-- **superpowers:test-driven-development** - Subagents follow TDD for each task
+**子代理應使用：**
+- **超級能力：測試驅動開發** - 子代理程式遵循TDD執行每項任務
 
-**Alternative workflow:**
-- **superpowers:executing-plans** - Use for parallel session instead of same-session execution
+**替代工作流程：**
+- **superpowers:executing-plans** - 用於端點會話而不是相同會話執行

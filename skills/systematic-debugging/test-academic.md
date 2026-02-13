@@ -1,14 +1,14 @@
-# Academic Test: Systematic Debugging Skill
+# 學術測試：系統調試能力
 
-You have access to the systematic debugging skill at skills/debugging/systematic-debugging
+您可以在技能/調試/系統調試中存取系統調試技能
 
-Read the skill and answer these questions based SOLELY on what the skill says:
+閱讀該技能並僅根據該技能的內容回答以下問題：
 
-1. What are the four phases of systematic debugging?
-2. What must you do BEFORE attempting any fix?
-3. In Phase 3, what should you do if your first hypothesis doesn't work?
-4. What does the skill say about fixing multiple things at once?
-5. What should you do if you don't fully understand the issue?
-6. Is it ever acceptable to skip the process for simple bugs?
+1. 系統調試的四個階段是什麼？
+2. 在嘗試修復之前您必須做什麼？
+3. 在第三階段，如果你的第一個假設不成立，你該怎麼辦？
+4. 該技能對於同時修復多個問題有何說明？
+5. 如果你不完全理解這個問題該怎麼辦？
+6. 對於簡單的錯誤跳過該過程是否可以接受？
 
-Return your answers with direct quotes from the skill where applicable.
+返回您的答案，並在適用的情況下直接引用該技能的內容。

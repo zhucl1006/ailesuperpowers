@@ -1,21 +1,21 @@
-# Installing Superpowers for OpenCode
+# 在 OpenCode 安裝 Superpowers
 
-## Prerequisites
+## 先決條件
 
-- [OpenCode.ai](https://opencode.ai) installed
-- Git installed
+- 已安裝 [OpenCode.ai](https://opencode.ai)
+- 已安裝 Git
 
-## Installation Steps
+## 安裝步驟
 
-### 1. Clone Superpowers
+### 1) Clone Superpowers
 
 ```bash
 git clone https://github.com/obra/superpowers.git ~/.config/opencode/superpowers
 ```
 
-### 2. Register the Plugin
+### 2) 註冊外掛
 
-Create a symlink so OpenCode discovers the plugin:
+建立符號連結，讓 OpenCode 載入外掛：
 
 ```bash
 mkdir -p ~/.config/opencode/plugins
@@ -23,9 +23,9 @@ rm -f ~/.config/opencode/plugins/superpowers.js
 ln -s ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js ~/.config/opencode/plugins/superpowers.js
 ```
 
-### 3. Symlink Skills
+### 3) 建立 skills 符號連結
 
-Create a symlink so OpenCode's native skill tool discovers superpowers skills:
+建立符號連結，讓 OpenCode 原生 `skill` 工具發現 superpowers skills：
 
 ```bash
 mkdir -p ~/.config/opencode/skills
@@ -33,39 +33,36 @@ rm -rf ~/.config/opencode/skills/superpowers
 ln -s ~/.config/opencode/superpowers/skills ~/.config/opencode/skills/superpowers
 ```
 
-### 4. Restart OpenCode
+### 4) 重新啟動 OpenCode
 
-Restart OpenCode. The plugin will automatically inject superpowers context.
+重啟後，外掛會自動注入 superpowers 啟動上下文。  
+可用「你有 superpowers 嗎？」快速驗證。
 
-Verify by asking: "do you have superpowers?"
+## 使用方式
 
-## Usage
+### 列出技能
 
-### Finding Skills
-
-Use OpenCode's native `skill` tool to list available skills:
+使用 OpenCode 原生 `skill` 工具：
 
 ```
 use skill tool to list skills
 ```
 
-### Loading a Skill
-
-Use OpenCode's native `skill` tool to load a specific skill:
+### 載入技能
 
 ```
 use skill tool to load superpowers/brainstorming
 ```
 
-### Personal Skills
+### 個人技能
 
-Create your own skills in `~/.config/opencode/skills/`:
+在 `~/.config/opencode/skills/` 建立個人技能：
 
 ```bash
 mkdir -p ~/.config/opencode/skills/my-skill
 ```
 
-Create `~/.config/opencode/skills/my-skill/SKILL.md`:
+建立 `~/.config/opencode/skills/my-skill/SKILL.md`：
 
 ```markdown
 ---
@@ -78,42 +75,42 @@ description: Use when [condition] - [what it does]
 [Your skill content here]
 ```
 
-### Project Skills
+### 專案技能
 
-Create project-specific skills in `.opencode/skills/` within your project.
+可在專案內 `.opencode/skills/` 建立專案專用技能。  
+**優先順序：** 專案技能 > 個人技能 > Superpowers 技能
 
-**Skill Priority:** Project skills > Personal skills > Superpowers skills
-
-## Updating
+## 更新
 
 ```bash
 cd ~/.config/opencode/superpowers
 git pull
 ```
 
-## Troubleshooting
+## 疑難排解
 
-### Plugin not loading
+### 外掛未載入
 
-1. Check plugin symlink: `ls -l ~/.config/opencode/plugins/superpowers.js`
-2. Check source exists: `ls ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js`
-3. Check OpenCode logs for errors
+1. 檢查外掛符號連結：`ls -l ~/.config/opencode/plugins/superpowers.js`
+2. 檢查來源是否存在：`ls ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js`
+3. 查看 OpenCode 日誌是否有錯誤
 
-### Skills not found
+### 找不到技能
 
-1. Check skills symlink: `ls -l ~/.config/opencode/skills/superpowers`
-2. Verify it points to: `~/.config/opencode/superpowers/skills`
-3. Use `skill` tool to list what's discovered
+1. 檢查 skills 符號連結：`ls -l ~/.config/opencode/skills/superpowers`
+2. 確認它指向：`~/.config/opencode/superpowers/skills`
+3. 用 `skill` 工具列出已發現技能
 
-### Tool mapping
+### 工具映射
 
-When skills reference Claude Code tools:
+當技能文檔引用 Claude Code 工具時：
+
 - `TodoWrite` → `update_plan`
-- `Task` with subagents → `@mention` syntax
-- `Skill` tool → OpenCode's native `skill` tool
-- File operations → your native tools
+- `Task`（含子代理）→ `@mention` 語法
+- `Skill` 工具 → OpenCode 原生 `skill` 工具
+- 檔案操作 → 你的原生工具
 
-## Getting Help
+## 取得協助
 
-- Report issues: https://github.com/obra/superpowers/issues
-- Full documentation: https://github.com/obra/superpowers/blob/main/docs/README.opencode.md
+- 問題回報：https://github.com/obra/superpowers/issues
+- 完整文檔：https://github.com/obra/superpowers/blob/main/docs/README.opencode.md

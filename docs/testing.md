@@ -1,12 +1,12 @@
-# Testing Superpowers Skills
+# 測試超能力技能
 
-This document describes how to test Superpowers skills, particularly the integration tests for complex skills like `subagent-driven-development`.
+本文檔描述如何測試超級技能，特別是複雜技能的整合測試，例如`subagent-driven-development`.
 
-## Overview
+## 概述
 
-Testing skills that involve subagents, workflows, and complex interactions requires running actual Claude Code sessions in headless mode and verifying their behavior through session transcripts.
+測試涉及子代理程式、工作流程和複雜互動的技能需要在無頭模式下運行實際的 Claude Code 會話，並透過會話記錄驗證其行為。
 
-## Test Structure
+## 測試結構
 
 ```
 tests/
@@ -17,11 +17,11 @@ tests/
 │   └── run-skill-tests.sh                 # Test runner (if exists)
 ```
 
-## Running Tests
+## 運行測試
 
-### Integration Tests
+### 集成測試
 
-Integration tests execute real Claude Code sessions with actual skills:
+整合測試使用實際技能執行真實的克勞德程式碼會話：
 
 ```bash
 # Run the subagent-driven-development integration test
@@ -29,41 +29,41 @@ cd tests/claude-code
 ./test-subagent-driven-development-integration.sh
 ```
 
-**Note:** Integration tests can take 10-30 minutes as they execute real implementation plans with multiple subagents.
+**注意：** 整合測試可能需要 10-30 分鐘，因為它們使用多個子代理執行實際實施計劃。
 
-### Requirements
+### 要求
 
-- Must run from the **superpowers plugin directory** (not from temp directories)
-- Claude Code must be installed and available as `claude` command
-- Local dev marketplace must be enabled: `"superpowers@superpowers-dev": true` in `~/.claude/settings.json`
+- 必須從 **superpowers 插件目錄** 運行（而不是從臨時目錄）
+- 克勞德代碼必須安裝並可用`claude`命令
+- 必須啟用本地開發市場：`"superpowers@superpowers-dev": true`在`~/.claude/settings.json`
 
-## Integration Test: subagent-driven-development
+## 集成測試：子代​​理驅動開發
 
-### What It Tests
+### 它測試什麼
 
-The integration test verifies the `subagent-driven-development` skill correctly:
+集成測試驗證了`subagent-driven-development`技能正確：
 
-1. **Plan Loading**: Reads the plan once at the beginning
-2. **Full Task Text**: Provides complete task descriptions to subagents (doesn't make them read files)
-3. **Self-Review**: Ensures subagents perform self-review before reporting
-4. **Review Order**: Runs spec compliance review before code quality review
-5. **Review Loops**: Uses review loops when issues are found
-6. **Independent Verification**: Spec reviewer reads code independently, doesn't trust implementer reports
+1. **計劃加載**：開始時閱讀一次計劃
+2. **完整任務文本**：向子代理提供完整的任務描述（不會讓他們讀取文件）
+3. **自我審查**：確保子代理在報告前進行自我審查
+4. **審核順序**：在程式碼品質審核之前執行規範合規性審核
+5. **審查循環**：發現問題時使用審查循環
+6. **獨立驗證**：規範審查者獨立讀取代碼，不信任實施者報告
 
-### How It Works
+### 它是如何運作的
 
-1. **Setup**: Creates a temporary Node.js project with a minimal implementation plan
-2. **Execution**: Runs Claude Code in headless mode with the skill
-3. **Verification**: Parses the session transcript (`.jsonl` file) to verify:
-   - Skill tool was invoked
-   - Subagents were dispatched (Task tool)
-   - TodoWrite was used for tracking
-   - Implementation files were created
-   - Tests pass
-   - Git commits show proper workflow
-4. **Token Analysis**: Shows token usage breakdown by subagent
+1. **設定**：建立一個臨時Node.js項目，並制定最小的實施計劃
+2. **執行**：使用技能在無頭模式下運行克勞德程式碼
+3. **驗證**：解析會話記錄（`.jsonl`文件）來驗證：
+   - 技能工具被調用
+   - 已派遣子代理程式（任務工具）
+   - TodoWrite 用於跟蹤
+   - 建立實施文件
+   - 測試通過
+   - Git 提交顯示正確的工作流程
+4. **令牌分析**：按子代理顯示令牌使用情況細分
 
-### Test Output
+### 測試輸出
 
 ```
 ========================================
@@ -134,19 +134,19 @@ TOTALS:
 STATUS: PASSED
 ```
 
-## Token Analysis Tool
+## 代幣分析工具
 
-### Usage
+### 用法
 
-Analyze token usage from any Claude Code session:
+分析任何 Claude Code 會話中的令牌使用情況：
 
 ```bash
 python3 tests/claude-code/analyze-token-usage.py ~/.claude/projects/<project-dir>/<session-id>.jsonl
 ```
 
-### Finding Session Files
+### 查找會話文件
 
-Session transcripts are stored in `~/.claude/projects/` with the working directory path encoded:
+會話記錄儲存在`~/.claude/projects/`工作目錄路徑編碼：
 
 ```bash
 # Example for /Users/jesse/Documents/GitHub/superpowers/superpowers
@@ -156,66 +156,66 @@ SESSION_DIR="$HOME/.claude/projects/-Users-jesse-Documents-GitHub-superpowers-su
 ls -lt "$SESSION_DIR"/*.jsonl | head -5
 ```
 
-### What It Shows
+### 它顯示了什麼
 
-- **Main session usage**: Token usage by the coordinator (you or main Claude instance)
-- **Per-subagent breakdown**: Each Task invocation with:
-  - Agent ID
-  - Description (extracted from prompt)
-  - Message count
-  - Input/output tokens
-  - Cache usage
-  - Estimated cost
-- **Totals**: Overall token usage and cost estimate
+- **主會話使用**：協調者（您或主 Claude 實例）的令牌使用情況
+- **每個子代理細分**：每個任務調用：
+  - 代理 ID
+  - 描述（摘自提示）
+  - 訊息數
+  - 輸入/輸出令牌
+  - 快取使用情況
+  - 預計費用
+- **總計**：整體代幣使用量與成本估算
 
-### Understanding the Output
+### 瞭解輸出
 
-- **High cache reads**: Good - means prompt caching is working
-- **High input tokens on main**: Expected - coordinator has full context
-- **Similar costs per subagent**: Expected - each gets similar task complexity
-- **Cost per task**: Typical range is $0.05-$0.15 per subagent depending on task
+- **高快取讀取**：良好 - 表示提示快取正在工作
+- **主節點上的高輸入令牌**：預期 - 協調器具有完整的上下文
+- **每個子代理的相似成本**：預期 - 每個子代理的任務複雜性相似
+- **每個任務的成本**：典型範圍為每個子代理 $0.05-$0.15，具體取決於任務
 
-## Troubleshooting
+## 故障排除
 
-### Skills Not Loading
+### 技能未加載
 
-**Problem**: Skill not found when running headless tests
+**問題**：運行無頭測試時找不到技能
 
-**Solutions**:
-1. Ensure you're running FROM the superpowers directory: `cd /path/to/superpowers && tests/...`
-2. Check `~/.claude/settings.json` has `"superpowers@superpowers-dev": true` in `enabledPlugins`
-3. Verify skill exists in `skills/` directory
+**解決方案**：
+1. 確保您正在從 superpowers 目錄運行：`cd /path/to/superpowers && tests/...`
+2. 查看`~/.claude/settings.json`有`"superpowers@superpowers-dev": true`在`enabledPlugins`
+3. 驗證技能存在於`skills/`目錄
 
-### Permission Errors
+### 權限錯誤
 
-**Problem**: Claude blocked from writing files or accessing directories
+**問題**：克勞德被阻止寫入檔案或存取目錄
 
-**Solutions**:
-1. Use `--permission-mode bypassPermissions` flag
-2. Use `--add-dir /path/to/temp/dir` to grant access to test directories
-3. Check file permissions on test directories
+**解決方案**：
+1. 使用`--permission-mode bypassPermissions`旗幟
+2. 使用`--add-dir /path/to/temp/dir`授予對測試目錄的存取權限
+3. 檢查測試目錄的文件權限
 
-### Test Timeouts
+### 測試超時
 
-**Problem**: Test takes too long and times out
+**問題**：測試時間太長並且超時
 
-**Solutions**:
-1. Increase timeout: `timeout 1800 claude ...` (30 minutes)
-2. Check for infinite loops in skill logic
-3. Review subagent task complexity
+**解決方案**：
+1. 增加超時：`timeout 1800 claude ...`（30分鐘）
+2. 檢查技能邏輯是否存在無限循環
+3. 檢查子代理任務複雜性
 
-### Session File Not Found
+### 未找到會話文件
 
-**Problem**: Can't find session transcript after test run
+**問題**：測試運行後找不到會話記錄
 
-**Solutions**:
-1. Check the correct project directory in `~/.claude/projects/`
-2. Use `find ~/.claude/projects -name "*.jsonl" -mmin -60` to find recent sessions
-3. Verify test actually ran (check for errors in test output)
+**解決方案**：
+1. 檢查正確的項目目錄`~/.claude/projects/`
+2. 使用`find ~/.claude/projects -name "*.jsonl" -mmin -60`查找最近的會話
+3. 驗證測試實際運作（檢查測試輸出是否有錯誤）
 
-## Writing New Integration Tests
+## 編寫新的集成測試
 
-### Template
+### 模板
 
 ```bash
 #!/usr/bin/env bash
@@ -253,20 +253,20 @@ fi
 python3 "$SCRIPT_DIR/analyze-token-usage.py" "$SESSION_FILE"
 ```
 
-### Best Practices
+### 最佳實踐
 
-1. **Always cleanup**: Use trap to cleanup temp directories
-2. **Parse transcripts**: Don't grep user-facing output - parse the `.jsonl` session file
-3. **Grant permissions**: Use `--permission-mode bypassPermissions` and `--add-dir`
-4. **Run from plugin dir**: Skills only load when running from the superpowers directory
-5. **Show token usage**: Always include token analysis for cost visibility
-6. **Test real behavior**: Verify actual files created, tests passing, commits made
+1. **始終清理**：使用 trap 清理臨時目錄
+2. **解析成績單**：不要 grep 面向用戶的輸出 - 解析`.jsonl`會話文件
+3. **授予權限**：使用`--permission-mode bypassPermissions`和`--add-dir`
+4. **從插件目錄運行**：技能僅在從 superpowers 目錄運行時加載
+5. **顯示代幣使用情況**：始終包含代幣分析以實現成本可見性
+6. **測試真實行為**：驗證實際建立的文件、測試通過、提交
 
-## Session Transcript Format
+## 會議記錄格式
 
-Session transcripts are JSONL (JSON Lines) files where each line is a JSON object representing a message or tool result.
+會話記錄是 JSONL（JSON 行）文件，其中每行都是表示消息或工具結果的 JSON 對象。
 
-### Key Fields
+### 重點領域
 
 ```json
 {
@@ -282,7 +282,7 @@ Session transcripts are JSONL (JSON Lines) files where each line is a JSON objec
 }
 ```
 
-### Tool Results
+### 工具結果
 
 ```json
 {
@@ -300,4 +300,4 @@ Session transcripts are JSONL (JSON Lines) files where each line is a JSON objec
 }
 ```
 
-The `agentId` field links to subagent sessions, and the `usage` field contains token usage for that specific subagent invocation.
+這`agentId`到子代理會話的字段鏈接，以及`usage`字段包含該特定子代理調用的令牌使用情況。

@@ -1,10 +1,10 @@
-# Go Fractals CLI - Design
+# Go 分形 CLI - 設計
 
-## Overview
+## 概述
 
-A command-line tool that generates ASCII art fractals. Supports two fractal types with configurable output.
+產生 ASCII 藝術分形的命令列工具。支援兩種具有可配置輸出的分形類型。
 
-## Usage
+## 用法
 
 ```bash
 # Sierpinski triangle
@@ -21,32 +21,32 @@ fractals --help
 fractals sierpinski --help
 ```
 
-## Commands
+## 命令
 
 ### `sierpinski`
 
-Generates a Sierpinski triangle using recursive subdivision.
+使用遞歸細分生成謝爾賓斯基三角形。
 
-Flags:
-- `--size` (default: 32) - Width of the triangle base in characters
+標誌：
+- `--size`（預設值：32）- 三角形底邊的寬度（以字元為單位）
 - `--depth` (default: 5) - Recursion depth
-- `--char` (default: '*') - Character to use for filled points
+- `--char`（默認值：'*'） - 用於填充點的字符
 
-Output: Triangle printed to stdout, one line per row.
+輸出：將三角形打印到標準輸出，每行一行。
 
 ### `mandelbrot`
 
 Renders the Mandelbrot set as ASCII art. Maps iteration count to characters.
 
-Flags:
-- `--width` (default: 80) - Output width in characters
+標誌：
+- `--width`（默認值：80）- 以字符為單位的輸出寬度
 - `--height` (default: 24) - Output height in characters
 - `--iterations` (default: 100) - Maximum iterations for escape calculation
 - `--char` (default: gradient) - Single character, or omit for gradient " .:-=+*#%@"
 
-Output: Rectangle printed to stdout.
+輸出：列印到標準輸出的矩形。
 
-## Architecture
+## 建築學
 
 ```
 cmd/
@@ -65,17 +65,17 @@ internal/
     mandelbrot.go     # Mandelbrot subcommand
 ```
 
-## Dependencies
+## 依賴關係
 
-- Go 1.21+
-- `github.com/spf13/cobra` for CLI
+- 去1.21+
+- `github.com/spf13/cobra`對於 CLI
 
-## Acceptance Criteria
+## 驗收標準
 
-1. `fractals --help` shows usage
-2. `fractals sierpinski` outputs a recognizable triangle
-3. `fractals mandelbrot` outputs a recognizable Mandelbrot set
-4. `--size`, `--width`, `--height`, `--depth`, `--iterations` flags work
-5. `--char` customizes output character
-6. Invalid inputs produce clear error messages
-7. All tests pass
+1. `fractals --help`顯示用法
+2. `fractals sierpinski`輸出一個可辨識的三角形
+3. `fractals mandelbrot`輸出一個可識別的曼德爾布羅集
+4. `--size`, `--width`, `--height`, `--depth`, `--iterations`旗幟工作
+5. `--char`自訂輸出字符
+6. 無效輸入會產生明確的錯誤訊息
+7. 所有測試均通過

@@ -1,30 +1,30 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
+description: 當實現完成時，所有測試都通過並且您需要決定如何整合工作時使用 - 透過提供合併、PR 或清理的打包選項來指導開發工作的完成
 ---
 
-# Finishing a Development Branch
+# 完成開發分支
 
-## Overview
+## 概述
 
-Guide completion of development work by presenting clear options and handling chosen workflow.
+通過提供清晰的選項和處理選定的工作流程來指導開發工作的完成。
 
-**Core principle:** Verify tests → Present options → Execute choice → Clean up.
+**核心原則：** 驗證測試→呈現選項→執行選擇→清理。
 
-**Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
+**開始時宣佈：**“我正在使用完成開發分支技能來完成這項工作。”
 
-## The Process
+## 流程
 
-### Step 1: Verify Tests
+### 第 1 步：驗證測試
 
-**Before presenting options, verify tests pass:**
+**在提供選項之前，請先驗證測試是否通過：**
 
 ```bash
 # Run project's test suite
 npm test / cargo test / pytest / go test ./...
 ```
 
-**If tests fail:**
+**如果測試失敗：**
 ```
 Tests failing (<N> failures). Must fix before completing:
 
@@ -33,22 +33,22 @@ Tests failing (<N> failures). Must fix before completing:
 Cannot proceed with merge/PR until tests pass.
 ```
 
-Stop. Don't proceed to Step 2.
+停止。不要繼續執行步驟 2。
 
-**If tests pass:** Continue to Step 2.
+**如果測試通過：** 繼續執行步驟 2。
 
-### Step 2: Determine Base Branch
+### 步驟2：確定基礎分支
 
 ```bash
 # Try common base branches
 git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
 ```
 
-Or ask: "This branch split from main - is that correct?"
+或者問：“這個分支從主分支中分離出來 - 這是正確的嗎？”
 
-### Step 3: Present Options
+### 第 3 步：提出選項
 
-Present exactly these 4 options:
+準確呈現這 4 個選項：
 
 ```
 Implementation complete. What would you like to do?
@@ -61,11 +61,11 @@ Implementation complete. What would you like to do?
 Which option?
 ```
 
-**Don't add explanation** - keep options concise.
+**不要加入解釋** - 保持選項簡潔。
 
-### Step 4: Execute Choice
+### 第四步：執行選擇
 
-#### Option 1: Merge Locally
+#### 選項 1：本地合併
 
 ```bash
 # Switch to base branch
@@ -84,9 +84,9 @@ git merge <feature-branch>
 git branch -d <feature-branch>
 ```
 
-Then: Cleanup worktree (Step 5)
+然後：清理工作樹（步驟 5）
 
-#### Option 2: Push and Create PR
+#### 選項2：全民並建立PR
 
 ```bash
 # Push branch
@@ -103,17 +103,17 @@ EOF
 )"
 ```
 
-Then: Cleanup worktree (Step 5)
+然後：清理工作樹（步驟 5）
 
-#### Option 3: Keep As-Is
+#### 選項 3：保持原樣
 
-Report: "Keeping branch <name>. Worktree preserved at <path>."
+報告：“保留分支 <名稱>。工作樹保留在 <路徑>。”
 
-**Don't cleanup worktree.**
+**不要清理工作樹。 **
 
-#### Option 4: Discard
+#### 選項 4：丟棄
 
-**Confirm first:**
+**先確認：**
 ```
 This will permanently delete:
 - Branch <name>
@@ -123,78 +123,78 @@ This will permanently delete:
 Type 'discard' to confirm.
 ```
 
-Wait for exact confirmation.
+等待具體確認。
 
-If confirmed:
+如果確認：
 ```bash
 git checkout <base-branch>
 git branch -D <feature-branch>
 ```
 
-Then: Cleanup worktree (Step 5)
+然後：清理工作樹（步驟 5）
 
-### Step 5: Cleanup Worktree
+### 第 5 步：清理工作樹
 
-**For Options 1, 2, 4:**
+**對於選項 1、2、4：**
 
-Check if in worktree:
+檢查是否在工作樹中：
 ```bash
 git worktree list | grep $(git branch --show-current)
 ```
 
-If yes:
+如果是：
 ```bash
 git worktree remove <worktree-path>
 ```
 
-**For Option 3:** Keep worktree.
+**對於選項 3：** 保留工作樹。
 
-## Quick Reference
+## 快速參考
 
-| Option | Merge | Push | Keep Worktree | Cleanup Branch |
+|選項 |合併 |推|保留工作樹 |清理分行|
 |--------|-------|------|---------------|----------------|
-| 1. Merge locally | ✓ | - | - | ✓ |
-| 2. Create PR | - | ✓ | ✓ | - |
-| 3. Keep as-is | - | - | ✓ | - |
-| 4. Discard | - | - | - | ✓ (force) |
+| 1.本地合併| ✓ | - | - | ✓ |
+| 2.建立公關| - | ✓ | ✓ | - |
+| 3. 保持原樣| - | - | ✓ | - |
+| 4. 丟棄| - | - | - | ✓（力）|
 
-## Common Mistakes
+## 常見錯誤
 
-**Skipping test verification**
-- **Problem:** Merge broken code, create failing PR
-- **Fix:** Always verify tests before offering options
+**跳過測試驗證**
+- **問題：**合併損壞的碼，建立失敗的PR
+- **修復：** 在提供選項之前始終驗證測試
 
-**Open-ended questions**
-- **Problem:** "What should I do next?" → ambiguous
-- **Fix:** Present exactly 4 structured options
+**開放式問題**
+- **問題：**“接下來我應該做什麼？” → 模棱兩可
+- **修復：** 準確呈現 4 個結構化選項
 
-**Automatic worktree cleanup**
-- **Problem:** Remove worktree when might need it (Option 2, 3)
-- **Fix:** Only cleanup for Options 1 and 4
+**自動工作樹清理**
+- **問題：** 在可能需要時刪除工作樹（選項 2、3）
+- **修復：** 僅清理選項 1 和 4
 
-**No confirmation for discard**
-- **Problem:** Accidentally delete work
-- **Fix:** Require typed "discard" confirmation
+**沒有確認丟棄**
+- **問題：** 意外刪除工作
+- **修復：** 需要輸入「丟棄」確認
 
-## Red Flags
+## 危險信號
 
-**Never:**
-- Proceed with failing tests
-- Merge without verifying tests on result
-- Delete work without confirmation
-- Force-push without explicit request
+**絕不：**
+- 繼續失敗的測試
+- 合併而不驗證結果測試
+- 刪除作品而不確認
+- 沒有明確請求的強制推送
 
-**Always:**
-- Verify tests before offering options
-- Present exactly 4 options
-- Get typed confirmation for Option 4
-- Clean up worktree for Options 1 & 4 only
+**總是：**
+- 在提供選項之前驗證測試
+- 正好給出 4 個選項
+- 取得選項 4 的鍵入確認訊息
+- 僅清理選項 1 和 4 的工作樹
 
-## Integration
+## 一體化
 
-**Called by:**
-- **subagent-driven-development** (Step 7) - After all tasks complete
-- **executing-plans** (Step 5) - After all batches complete
+**調用者：**
+- **子代理驅動開發**（第 7 步）- 所有任務完成後
+- **執行計劃**（步驟 5）- 所有批次完成後
 
-**Pairs with:**
-- **using-git-worktrees** - Cleans up worktree created by that skill
+**搭配：**
+- **using-git-worktrees** - 透過此技能創建工作樹進行清理

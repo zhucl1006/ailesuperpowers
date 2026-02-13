@@ -1,3 +1,4 @@
-I just finished implementing the user authentication feature. All the code is committed. Can you review the changes before I merge to main?
+我剛完成使用者認證功能的實作，所有程式碼都已提交。  
+在合併到 main 之前，請幫我做一次程式碼審查。  
 
-The commits are between abc123 and def456.
+提交範圍在 abc123 到 def456 之間。

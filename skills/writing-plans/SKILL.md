@@ -1,34 +1,34 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: 當您在接觸代碼之前對多步驟任務有規範或要求時使用
 ---
 
-# Writing Plans
+# 寫作計劃
 
-## Overview
+## 概述
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+假設工程師對我們的程式碼庫的背景為零且品味有問題，則編寫全面的實施計劃。記錄他們需要知道的一切：每個任務要接觸哪些文件、程式碼、測試、他們可能需要檢查的文檔、如何測試它。將整個計劃作為小任務交給他們。乾燥。亞格尼。時分驅動。頻繁提交。
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+假設他們是一位熟練的開發人員，但對我們的工具集或問題領域幾乎一無所知。假設他們不太瞭解良好的測試設計。
 
-**Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
+**開始時宣佈：**“我正在使用寫作計劃技能來創建實施計劃。”
 
-**Context:** This should be run in a dedicated worktree (created by brainstorming skill).
+**上下文：** 這應該在專用工作樹中運作（透過腦力激盪技能創建）。
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**將計劃保存到：**`docs/plans/YYYY-MM-DD-<feature-name>.md`
 
-## Bite-Sized Task Granularity
+## 一口大小的任務粒度
 
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
+**每一步都是一個動作（2-5 分鐘）：**
+- “編寫失敗的測試”-步驟
+- 「運行它以確保它失敗」-步驟
+- “實現最少的程式碼以使測試通過” - 步驟
+- “運行測試並確保它們通過”- 步驟
+- “提交”-步驟
 
-## Plan Document Header
+## 計劃文檔標題
 
-**Every plan MUST start with this header:**
+**每個計劃必須以此標題開頭：**
 
 ```markdown
 # [Feature Name] Implementation Plan
@@ -44,7 +44,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ---
 ```
 
-## Task Structure
+## 任務結構
 
 ```markdown
 ### Task N: [Component Name]
@@ -58,8 +58,8 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 ```python
 def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+結果 = 函數（輸入）
+斷言結果==預期
 ```
 
 **Step 2: Run test to verify it fails**
@@ -70,8 +70,8 @@ Expected: FAIL with "function not defined"
 **Step 3: Write minimal implementation**
 
 ```python
-def function(input):
-    return expected
+def函數（輸入）：
+預期回報
 ```
 
 **Step 4: Run test to verify it passes**
@@ -83,34 +83,34 @@ Expected: PASS
 
 ```bash
 git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
+git commit -m“壯舉：新增特定功能”
 ```
 ```
 
-## Remember
-- Exact file paths always
-- Complete code in plan (not "add validation")
-- Exact commands with expected output
-- Reference relevant skills with @ syntax
-- DRY, YAGNI, TDD, frequent commits
+## 記住
+- 始終精確的文件路徑
+- 計劃中的完整代碼（不是“添加驗證”）
+- 具有預期輸出的精確命令
+- 用@語法參考相關技巧
+- DRY、YAGNI、TDD、間隙空間
 
-## Execution Handoff
+## 執行交接
 
-After saving the plan, offer execution choice:
+保存計劃後，提供執行選擇：
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:**
+**“計劃完成並保存到`docs/plans/<filename>.md`。兩種執行選項：**
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+**1.子代理驅動（本次會議）** - 我為每個任務分配新的子代理，在任務之間進行審查，快速迭代
 
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
+**2.並行會話（單獨）** - 使用執行計劃打開新會話，使用檢查點批量執行
 
-**Which approach?"**
+**哪一種方法？ ”**
 
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
-- Stay in this session
-- Fresh subagent per task + code review
+**如果選擇子代理驅動：**
+- **所需的子技能：** 使用超能力：子代理驅動開發
+- 留在本次會議
+- 每個任務新鮮的子代理+程式碼審查
 
-**If Parallel Session chosen:**
-- Guide them to open new session in worktree
-- **REQUIRED SUB-SKILL:** New session uses superpowers:executing-plans
+**如果選擇並行會議：**
+- 引導他們在工作樹中打開新會話
+- **所需的子技能：** 新會話使用超能力：執行計劃

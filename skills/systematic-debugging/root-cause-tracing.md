@@ -1,12 +1,12 @@
-# Root Cause Tracing
+# 根本原因追蹤
 
-## Overview
+## 概述
 
-Bugs often manifest deep in the call stack (git init in wrong directory, file created in wrong location, database opened with wrong path). Your instinct is to fix where the error appears, but that's treating a symptom.
+錯誤通常表現在調用堆棧的深處（git init 在錯誤的目錄中、在錯誤的位置創建文件、使用錯誤的路徑打開數據庫）。您的本能是修復錯誤出現的位置，但只是治療症狀。
 
-**Core principle:** Trace backward through the call chain until you find the original trigger, then fix at the source.
+**核心原理：** 透過呼叫鏈向後追蹤，直到找到原始觸發點，然後修復來源。
 
-## When to Use
+## 何時使用
 
 ```dot
 digraph when_to_use {
@@ -23,26 +23,26 @@ digraph when_to_use {
 }
 ```
 
-**Use when:**
-- Error happens deep in execution (not at entry point)
-- Stack trace shows long call chain
-- Unclear where invalid data originated
-- Need to find which test/code triggers the problem
+**使用時間：**
+- 錯誤發生在執行深處（而不是在入口點）
+- 堆棧跟蹤顯示很長的調用鏈
+- 不清楚無效數據的來源
+- 需要找到哪個測試/程式碼觸發了問題
 
-## The Tracing Process
+## 追蹤過程
 
-### 1. Observe the Symptom
+### 1.觀察症狀
 ```
 Error: git init failed in /Users/jesse/project/packages/core
 ```
 
-### 2. Find Immediate Cause
-**What code directly causes this?**
+### 2.找到直接原因
+**什麼程式碼直接導致這個問題？ **
 ```typescript
 await execFileAsync('git', ['init'], { cwd: projectDir });
 ```
 
-### 3. Ask: What Called This?
+### 3. 問：這叫什麼？
 ```typescript
 WorktreeManager.createSessionWorktree(projectDir, sessionId)
   → called by Session.initializeWorkspace()
@@ -50,22 +50,22 @@ WorktreeManager.createSessionWorktree(projectDir, sessionId)
   → called by test at Project.create()
 ```
 
-### 4. Keep Tracing Up
-**What value was passed?**
-- `projectDir = ''` (empty string!)
-- Empty string as `cwd` resolves to `process.cwd()`
-- That's the source code directory!
+### 4. 繼續追蹤
+**傳遞了什麼值？ **
+- `projectDir = ''`（空字符串！）
+- 空字串為`cwd`決心`process.cwd()`
+- 那就是原始碼目錄！
 
-### 5. Find Original Trigger
-**Where did empty string come from?**
+### 5.尋找原始觸發點
+**空字符串從哪裡來？ **
 ```typescript
 const context = setupCoreTest(); // Returns { tempDir: '' }
 Project.create('name', context.tempDir); // Accessed before beforeEach!
 ```
 
-## Adding Stack Traces
+## 添加堆棧跟蹤
 
-When you can't trace manually, add instrumentation:
+當您無法手動跟蹤時，請添加檢測：
 
 ```typescript
 // Before the problematic operation
@@ -82,52 +82,52 @@ async function gitInit(directory: string) {
 }
 ```
 
-**Critical:** Use `console.error()` in tests (not logger - may not show)
+**關鍵：** 使用`console.error()`在測試中（不是記錄器 - 可能不會顯示）
 
-**Run and capture:**
+**運行並捕獲：**
 ```bash
 npm test 2>&1 | grep 'DEBUG git init'
 ```
 
-**Analyze stack traces:**
-- Look for test file names
-- Find the line number triggering the call
-- Identify the pattern (same test? same parameter?)
+**分析堆棧跟蹤：**
+- 尋找測試檔名
+- 查找觸發呼叫的線路號碼
+- 識別模式（相同的測試？相同的參數？）
 
-## Finding Which Test Causes Pollution
+## 找出哪個測試造成污染
 
-If something appears during tests but you don't know which test:
+如果測試期間出現某些情況但您不知道是哪個測試：
 
-Use the bisection script `find-polluter.sh` in this directory:
+使用二分腳本`find-polluter.sh`在此目錄中：
 
 ```bash
 ./find-polluter.sh '.git' 'src/**/*.test.ts'
 ```
 
-Runs tests one-by-one, stops at first polluter. See script for usage.
+逐一執行測試，在第一個污染者處停止。使用方法參考腳本。
 
-## Real Example: Empty projectDir
+## 真實示例：空projectDir
 
-**Symptom:** `.git` created in `packages/core/` (source code)
+**症狀：**`.git`創建於`packages/core/`(原始碼)
 
-**Trace chain:**
-1. `git init` runs in `process.cwd()` ← empty cwd parameter
-2. WorktreeManager called with empty projectDir
-3. Session.create() passed empty string
-4. Test accessed `context.tempDir` before beforeEach
-5. setupCoreTest() returns `{ tempDir: '' }` initially
+**追蹤鏈：**
+1. `git init`跑進`process.cwd()`← 空cwd參數
+2. 使用空的projectDir呼叫WorktreeManager
+3. Session.create() 提交空字符串
+4. 測試訪問`context.tempDir`在每個之前
+5. setupCoreTest() 返回`{ tempDir: '' }`最初
 
-**Root cause:** Top-level variable initialization accessing empty value
+**根本原因：** 頂級變數初始化存取空值
 
-**Fix:** Made tempDir a getter that throws if accessed before beforeEach
+**修復：**使 tempDir 成為 getter，如果在 beforeEach 之前訪問則發送異常
 
-**Also added defense-in-depth:**
-- Layer 1: Project.create() validates directory
-- Layer 2: WorkspaceManager validates not empty
-- Layer 3: NODE_ENV guard refuses git init outside tmpdir
-- Layer 4: Stack trace logging before git init
+**還添加了縱深防禦：**
+- 第一層：Project.create() 驗證目錄
+- 第2層：WorkspaceManager 驗證不為空
+- 第三層：NODE_ENV 防護拒絕 tmpdir 以外的 git init
+- 第4層：git init之前的追蹤堆疊日誌記錄
 
-## Key Principle
+## 關鍵原理
 
 ```dot
 digraph principle {
@@ -151,19 +151,19 @@ digraph principle {
 }
 ```
 
-**NEVER fix just where the error appears.** Trace back to find the original trigger.
+**切勿僅修復錯誤出現的位置。 **回溯以找到原始觸發器。
 
-## Stack Trace Tips
+## 堆疊追蹤技巧
 
-**In tests:** Use `console.error()` not logger - logger may be suppressed
-**Before operation:** Log before the dangerous operation, not after it fails
-**Include context:** Directory, cwd, environment variables, timestamps
-**Capture stack:** `new Error().stack` shows complete call chain
+**在測試中：** 使用`console.error()`不是記錄器 - 記錄器可能被抑制
+**操作前：** 在危險操作之前記錄，而不是在失敗之後記錄
+**包含上下文：**目錄、cwd、環境變數、時間
+**捕獲堆棧：**`new Error().stack`顯示完整的呼叫鏈
 
-## Real-World Impact
+## 現實世界的影響
 
-From debugging session (2025-10-03):
-- Found root cause through 5-level trace
-- Fixed at source (getter validation)
-- Added 4 layers of defense
-- 1847 tests passed, zero pollution
+來自調試會話（2025-10-03）：
+- 透過5級追蹤找到根本原因
+- 在源頭修復（吸氣劑驗證）
+- 增加了4層防禦
+- 1847項測試通過，零污染
