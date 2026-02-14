@@ -33,6 +33,12 @@
 - `writing-skills`
 - `using-superpowers`
 
+## 3.1 團隊技能（Aile，自定義）
+
+這些技能以「保留原 Skill + 複製改寫」方式落地，作為團隊流程語義層（`aile-*`）。
+
+- 映射與增強點：`docs/modules/aile-skill-mapping.md`
+
 ## 4. 接口合約
 
 每個`SKILL.md`必須提供：

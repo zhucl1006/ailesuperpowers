@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Helper functions for Claude Code skill tests
 
+# Resolve repo root so tests exercise the local superpowers plugin/skills,
+# not whatever global agent environment happens to be configured.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
 # Run Claude Code with a prompt and capture output
 # Usage: run_claude "prompt text" [timeout_seconds] [allowed_tools]
 run_claude() {
@@ -10,7 +15,7 @@ run_claude() {
     local output_file=$(mktemp)
 
     # Build command
-    local cmd="claude -p \"$prompt\""
+    local cmd="claude -p \"$prompt\" --plugin-dir \"$PLUGIN_DIR\" --dangerously-skip-permissions"
     if [ -n "$allowed_tools" ]; then
         cmd="$cmd --allowed-tools=$allowed_tools"
     fi

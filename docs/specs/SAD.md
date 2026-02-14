@@ -42,6 +42,7 @@ flowchart LR
 - 小路：`skills/`
 - 職責：提供特定工作流程的說明（集思廣益、規劃、執行、審查、調試、驗證）
 - 接口：YAML frontmatter (`name`, `description`) + 降價正文
+- 擴展：團隊可在同一層新增自定義 Skill（例如 `aile-*`），並在 `docs/modules/aile-skill-mapping.md` 中維護來源與增強點映射
 
 ### 4.2 平臺整合層
 
@@ -99,6 +100,13 @@ sequenceDiagram
 4. 退貨已解決`SKILL.md`路徑和源元數據
 
 執行：`resolveSkillPath`在`lib/skills-core.js`
+
+### 5.4（團隊擴展）Jira MCP 整合流程
+
+團隊工作流可透過 MCP（Model Context Protocol）在 Skill 中聲明式調用 Jira Tool，實現 Issue 讀寫、狀態流轉與 Comment 回寫。
+
+- 指南：`docs/guides/JIRA-MCP-INTEGRATION.md`
+- 安全原則：Token 只允許來自環境變量注入，不得提交到儲存庫
 
 ## 6. 設計決策與理由
 

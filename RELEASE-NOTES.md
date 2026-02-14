@@ -1,5 +1,30 @@
 # 超能力發行說明
 
+## v4.2.1 (2026-02-13)
+
+### 改進
+
+**Aile：新增團隊化工作流技能（`aile-*`）與階段產物模板**
+
+此版本在不破壞既有 Superpowers 核心技能的前提下，引入「保留原 Skill + 新增團隊 Skill」的增量改造策略，讓團隊可逐步對齊你們的 PM→開發→QA→PM 閉環流程：
+
+- 新增 `skills/aile-*` 系列技能（需求接入、計畫、TDD、子代理開發、CR、交付、設計門禁）
+- 新增階段模板：`docs/templates/`（Story/分析計畫/PR 描述）與 G2 設計審查清單
+- 新增技能映射文件：`docs/modules/aile-skill-mapping.md`（來源追溯與團隊增強點）
+- 新增 Jira MCP 整合指南：`docs/guides/JIRA-MCP-INTEGRATION.md`（工具契約與安全注入約束）
+- 新增試點報告模板：`docs/plans/PILOT-STORY-REPORT.md`（端到端試點記錄入口）
+- 完成 AL-1651 真實 Jira 聯調試點（狀態流轉 + Comment 回寫），並補充 `docs/plans/AL-1651/analysis.md`
+
+### 測試
+
+**新增離線合約校驗（不依賴外部 CLI）**
+
+增加 `tests/docs/` 以離線方式校驗核心產物（模板、技能文件與關鍵標記）是否存在，作為 CI/本地最小回歸門檻：
+
+- `bash "tests/docs/run-all.sh"`
+
+並對部分整合測試腳本做了更健壯的行為對齊，以降低不同環境下的波動性（例如本機外掛路徑指定、觸發行為回退判斷等）。
+
 ## v4.2.0 (2026-02-05)
 
 ### 重大變化

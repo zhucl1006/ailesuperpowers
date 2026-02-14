@@ -54,6 +54,13 @@
 - `commands/brainstorm.md`
 - `commands/write-plan.md`
 - `commands/execute-plan.md`
+- `commands/aile-requirement-intake.md`
+- `commands/aile-write-plan.md`
+- `commands/aile-pencil-design.md`
+- `commands/aile-tdd.md`
+- `commands/aile-subagent-dev.md`
+- `commands/aile-code-review.md`
+- `commands/aile-delivery-report.md`
 
 每個命令使用`disable-model-invocation: true`並指示直接技能調用。
 

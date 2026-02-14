@@ -17,6 +17,14 @@
 
 - `docs/guides/AI-DEVELOPMENT-GUIDE.md`- 日常開發工作流程、編碼約定、驗證清單
 
+### 團隊模板（Aile）
+
+- `docs/templates/`- 階段產物模板（Story/分析計畫/PR 描述）
+- `docs/templates/g2-design-review-checklist.md`- G2 設計審查清單（PM/QA/開發負責人協作門禁）
+- `docs/modules/aile-skill-mapping.md`- 團隊自定義 `aile-*` Skill 與原 Skill 的映射與增強點
+- `docs/guides/JIRA-MCP-INTEGRATION.md`- Jira MCP 整合指南（工具契約、環境變數與安全約束）
+- `docs/plans/PILOT-STORY-REPORT.md`- Aile 工作流試點報告模板（端到端演練記錄）
+
 ### 模組文檔
 
 - `docs/modules/skills-library.md`- 技能分類、結構和擴展規則

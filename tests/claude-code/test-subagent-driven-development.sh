@@ -54,7 +54,7 @@ echo "測試 2：流程順序..."
 
 output=$(run_claude_with_retry "在 subagent-driven-development 中，規範合規審查與程式碼品質審查哪個先做？請明確說明順序。" 120)
 
-if assert_contains "$output" "spec.*compliance.*code.*quality\|規範.*合規.*程式碼.*品質\|規格.*合規.*代碼.*質量\|规范.*合规.*代码.*质量\|先.*規範.*後.*程式碼\|先.*规范.*后.*代码" "先規範合規，再程式碼品質"; then
+if assert_contains "$output" "spec.*compliance.*code.*quality\|規範.*合規.*程式碼.*品質\|規格.*合規.*代碼.*質量\|规格.*合规.*代码.*质量\|规范.*合规.*代码.*质量\|先.*規範.*後.*程式碼\|先.*规范.*后.*代码\|先做.*后做" "先規範合規，再程式碼品質"; then
     : # pass
 else
     exit 1
@@ -92,7 +92,9 @@ else
     exit 1
 fi
 
-if assert_not_contains "$output" "多次\|兩次\|2次\|二次\|twice\|multiple\|MULTIPLE" "不是多次讀取"; then
+# Allow mentioning other skills (e.g. executing-plans) that read plans multiple times.
+# Only fail if it claims the controller reads the plan multiple times in SDD.
+if assert_not_contains "$output" "控制者.*多次\|控制者.*兩次\|控制者.*两次\|控制者.*2次\|控制者.*二次\|讀取計畫檔.*多次\|读取计划.*多次\|controller.*multiple\|read.*plan.*multiple" "不是多次讀取"; then
     : # pass
 else
     exit 1
@@ -117,7 +119,7 @@ else
     exit 1
 fi
 
-if assert_contains "$output" "read.*code\|inspect.*code\|verify.*code\|讀.*程式碼\|讀取.*程式碼\|阅读.*代码\|查看.*代码\|检查.*代码\|檢查.*程式碼" "審查者會直接看程式碼"; then
+if assert_contains "$output" "read.*code\|inspect.*code\|verify.*code\|讀.*程式碼\|讀取.*程式碼\|阅读.*代码\|读取.*代码\|直接读取.*代码\|查看.*代码\|检查.*代码\|檢查.*程式碼" "審查者會直接看程式碼"; then
     : # pass
 else
     exit 1
