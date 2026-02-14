@@ -20,4 +20,4 @@
 | `aile-subagent-dev` | `skills/subagent-driven-development/SKILL.md` | 3 | 子任务驱动、双阶段审查对齐团队规范、Jira 状态同步 |  | 已完成 |
 | `aile-code-review` | `skills/requesting-code-review/SKILL.md` | 4 | 架构合规、AI 幻觉排查、阻塞分级、Jira Comment 回写 |  | 已完成 |
 | `aile-delivery-report` | `skills/finishing-a-development-branch/SKILL.md` | 4 | PR 描述模板化、Story 关联、状态流转建议 |  | 已完成 |
-| `aile-pencil-design` | `skills/brainstorming/SKILL.md` + `skills/writing-plans/SKILL.md` | 2 | Pencil 设计产物约束、G2 审查清单与门禁 |  | 已完成 |
+| `aile-pencil-design` | `skills/brainstorming/SKILL.md` + `skills/writing-plans/SKILL.md` | 2 | Pencil MCP 执行规范、分批作图门禁、G2 证据化审查清单 |  | 已完成 |
