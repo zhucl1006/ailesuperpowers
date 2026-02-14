@@ -15,7 +15,7 @@
 | 团队 Skill | 来源原 Skill | 阶段 | 团队增强点 | 负责人 | 状态 |
 |---|---|---|---|---|---|
 | `aile-requirement-intake` | `skills/brainstorming/SKILL.md` | 2 | Jira Story 结构化解析、风险识别、输出需求摘要 |  | 已完成 |
-| `aile-writing-plans` | `skills/writing-plans/SKILL.md` | 2 | 输出 `docs/plans/{Story-Key}/analysis.md`、Sub-task 映射、AC 细化回写 |  | 已完成 |
+| `aile-writing-plans` | `skills/writing-plans/SKILL.md` | 2 | 输出 `docs/plans/{Story-Key}/analysis.md`、Sub-task 自动创建 + 结果回填、AC 细化回写 |  | 已完成 |
 | `aile-tdd` | `skills/test-driven-development/SKILL.md` | 3 | 强制 RED-GREEN-REFACTOR、证据化验证与状态同步 |  | 已完成 |
 | `aile-subagent-dev` | `skills/subagent-driven-development/SKILL.md` | 3 | 子任务驱动、双阶段审查对齐团队规范、Jira 状态同步 |  | 已完成 |
 | `aile-code-review` | `skills/requesting-code-review/SKILL.md` | 4 | 架构合规、AI 幻觉排查、阻塞分级、Jira Comment 回写 |  | 已完成 |

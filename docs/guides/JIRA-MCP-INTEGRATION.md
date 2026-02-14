@@ -39,6 +39,19 @@
 - `aile-tdd` / `aile-subagent-dev`：更新 Sub-task 状态
 - `aile-delivery-report`：写入 PR 链接 Comment，流转 Story 状态
 
+### 5.1 `aile-writing-plans` 的 Sub-task 创建契约
+
+- 创建时机：任务拆解完成后、交接开发前
+- 调用 Tool：`jira_create_issue`
+- 最小字段：
+  - `summary`：任务标题
+  - `description`：任务说明与验收要点
+  - `parent`：父 Story Key
+  - `labels`：至少包含 Story-Key 与阶段标签
+  - `assignee`：可选
+- 结果回填：在 `analysis.md` 记录每个任务的 Sub-task Key 或失败原因
+- 降级规则：若 MCP 调用失败，必须标记“未创建（原因：xxx，需人工补录）”
+
 ## 6. 失败处理（必须）
 
 - Tool 调用失败：记录失败原因，提示人工补录，不得声称已同步成功
