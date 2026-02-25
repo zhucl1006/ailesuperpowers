@@ -31,4 +31,4 @@ PR Description 必须使用模板：`docs-templates/stage3-pr-description-templa
 2. 按模板生成 PR Description（可直接粘贴到 PR 平台）
 3.（可选）若启用 Jira MCP：
    - 在 Story Comment 贴 PR 链接并 @mention 开发负责人
-
+4. Jira状态变更时调用 `jira_update_issue` 更新对应 Story 的状态字段为 developed

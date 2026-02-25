@@ -100,6 +100,10 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
   - 成功：记录 Sub-task Key（如 `ABC-234`）
   - 失败：记录“未创建（原因：xxx，需人工补录）”
 
+### Step 6：Jira MCP 回写状态（可选）
+- Jira状态变更时调用 `jira_update_issue` 更新对应 Story 的状态字段为 developing
+
+
 ### Step 7：交接到执行阶段
 
 - 推荐后续执行技能：`aile-tdd` 或 `aile-subagent-dev`
