@@ -20,7 +20,7 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 
 在新会话里直接描述任务，例如：
 
-- `请使用 aile-requirement-intake 处理 Jira Story ABC-123`
+- `请使用 aile-requirement-analysis 处理 Jira Story ABC-123`
 - `请使用 aile-writing-plans 为 ABC-123 生成执行计划`
 
 如果技能触发成功，代理会按对应 `SKILL.md` 的流程执行并产出文档。
@@ -28,7 +28,7 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 ## Aile 工作流（推荐顺序）
 
 1. `aile-docs-init`：项目文档初始化/回补（可选，项目级）
-2. `aile-requirement-intake`：需求接入，产出 `analysis.md`
+2. `aile-requirement-analysis`：需求接入，产出 `analysis.md`
 3. `aile-pencil-design`：UI 设计（有 UI 变更时）
 4. `aile-writing-plans`：产出可执行 `plan.md`
 5. `aile-executing-plans` 或 `aile-subagent-dev`：执行开发任务
@@ -42,8 +42,8 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 
 | Skill | 适用阶段 | 何时使用 | 关键输入 | 核心产出 |
 |---|---|---|---|---|
-| `aile-docs-init`（skill name: `project-docs-init`） | 项目启动前/文档治理 | 新项目建文档，或已有代码回补文档 | 项目需求或现有代码库 | 完整项目文档体系（PRD/SAD/开发指南等） |
-| `aile-requirement-intake` | 阶段2 | 接入 Jira Story，澄清需求与风险 | Story 描述、AC、UI 示意 | `docs/plans/{Story-Key}/analysis.md` |
+| `aile-docs-init` | 项目启动前/文档治理 | 新项目建文档，或已有代码回补文档 | 项目需求或现有代码库 | 完整项目文档体系（PRD/SAD/开发指南等） |
+| `aile-requirement-analysis` | 阶段2 | 接入 Jira Story，澄清需求与风险 | Story 描述、AC、UI 示意 | `docs/plans/{Story-Key}/analysis.md` |
 | `aile-pencil-design` | 阶段2 | Story 涉及 UI/交互变更 | `analysis.md`、状态矩阵、交互路径 | `docs/plans/{Story-Key}/design.pen` + `analysis.md` UI 章节 |
 | `aile-writing-plans` | 阶段2 | 需要把需求转成可执行任务 | Story-Key、`analysis.md`、UI 方案 | `docs/plans/{Story-Key}/plan.md` |
 | `aile-executing-plans` | 阶段3 | 按计划分批执行并设置人工检查点 | `plan.md` | 分批实现与验证结果（按任务推进） |
@@ -58,11 +58,11 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
   - `根据代码回补项目文档`
 - 要点：先判断“新项目模式”还是“代码回补模式”，再分阶段问答与产出。
 
-### 2) `aile-requirement-intake`
+### 2) `aile-requirement-analysis`
 
 - 用途：把 Story 输入转成结构化需求分析。
 - 触发语句示例：
-  - `请使用 aile-requirement-intake 处理 ABC-123`
+  - `请使用 aile-requirement-analysis 处理 ABC-123`
 - 输出要求：必须写入 `docs/plans/{Story-Key}/analysis.md`，包含需求理解、风险、隐含需求、可测试 AC 初稿。
 
 ### 3) `aile-pencil-design`
@@ -111,7 +111,7 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 ## 端到端调用示例
 
 ```text
-1) 请使用 aile-requirement-intake 处理 ABC-123，并输出 analysis.md
+1) 请使用 aile-requirement-analysis 处理 ABC-123，并输出 analysis.md
 2) 请使用 aile-pencil-design 为 ABC-123 产出 design.pen（如果无 UI 变更请明确说明）
 3) 请使用 aile-writing-plans 为 ABC-123 生成 plan.md
 4) 请使用 aile-subagent-dev 按 plan.md 执行开发并完成审查
