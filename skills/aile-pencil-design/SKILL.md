@@ -1,6 +1,6 @@
 ---
 name: aile-pencil-design
-description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于需求与计划产出 design.pencil（或声明无 UI 设计），并准备 G2 设计审查材料。
+description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于需求与计划产出 design.pen（或声明无 UI 设计），并准备 G2 设计审查材料。
 ---
 
 # Aile：Pencil 设计（aile-pencil-design）
@@ -9,9 +9,9 @@ description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于�
 
 当 Story 涉及 UI/交互变更时，本技能用于阶段 2 产出可审查、可执行、可回溯的设计产物：
 
-- `docs/plans/{Story-Key}/design.pencil`（推荐）
+- `docs/plans/{Story-Key}/design.pen`（推荐）
 - 在 `docs/plans/{Story-Key}/analysis.md` 回填 UI 设计章节与证据
-- 若不产出 `.pencil`，必须明确写出“本 Story 无 UI 设计”及原因
+- 若不产出 `.pen`，必须明确写出“本 Story 无 UI 设计”及原因
 
 本技能采用 MCP-first 方式，核心目标是把“设计描述”升级为“设计执行规范 + 证据化门禁”。
 
@@ -46,7 +46,7 @@ description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于�
 ## 输出契约（必须遵守）
 
 - 产物目录：`docs/plans/{Story-Key}/`
-- 设计文件：`design.pencil`（有 UI 变更时必需）
+- 设计文件：`design.pen`（有 UI 变更时必需）
 - `analysis.md` 的 UI 章节必须包含：
   - 页面结构
   - 核心交互流程
@@ -69,7 +69,7 @@ description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于�
 
 - 在 `analysis.md` 标记 `UI 设计阻塞`
 - 记录阻塞原因、影响范围、恢复条件
-- 输出最小线框说明和状态清单，待 MCP 恢复后补齐 `design.pencil`
+- 输出最小线框说明和状态清单，待 MCP 恢复后补齐 `design.pen`
 
 ### Step 1：初始化设计上下文
 
@@ -105,7 +105,7 @@ description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于�
 
 在 `analysis.md` 的 UI 小节回填：
 
-- `.pencil` 文件路径
+- `.pen` 文件路径
 - 状态覆盖清单（正常/空/加载/异常）
 - 交互路径覆盖（入口、主流程、失败回路、返回路径）
 - 遗留风险与后续动作
@@ -115,7 +115,7 @@ description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于�
 PR 中至少包含：
 
 - `analysis.md`
-- `design.pencil`（如有 UI 变更）
+- `design.pen`（如有 UI 变更）
 - `docs/templates/g2-design-review-checklist.md` 对应自检结果
 
 ## 失败兜底与恢复策略
@@ -128,7 +128,7 @@ PR 中至少包含：
 
 满足以下条件才允许进入开发阶段：
 
-- 已产出并保存 `design.pencil`，或明确“本 Story 无 UI 设计”
+- 已产出并保存 `design.pen`，或明确“本 Story 无 UI 设计”
 - 状态矩阵至少覆盖正常/空/加载/异常四态
 - 主流程与失败回路均有可见反馈
 - `snapshot_layout` 与 `get_screenshot` 验收通过

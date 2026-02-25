@@ -1,147 +1,136 @@
-# 超能力
+# Aile Superpowers
 
-超級力量是為您的設計代理提供完整的軟體開發工作流程，建立在一組程式可組合的「技能」和一些確保您的代理人使用它們之上的終極指令。
+Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是把 AI 协作开发过程标准化、可追溯、可验收。
 
-## 它是如何運作的
+它通过一组 `skills/` 下的技能，把需求接入、计划编写、设计产出、开发执行、交付说明串成完整流水线。
 
-它從您啟動編碼代理的那一刻開始。一旦它發現您正在建立某些東西，它就不會立即嘗試編寫程式碼。相反，它會退後一步，問你真正想做什麼。
+## 快速开始
 
-一旦它從對話中挑出一個規範，它就會以足夠短的塊向您展示，以便您實際閱讀和消化。
+### 1) 安装（按平台）
 
-在您指定的設計後，您的合作夥伴會制定一個實施方案，該計劃針對產品品味差異、缺乏判斷力、沒有專案背景且首先測試的初級工程師表示足夠的聲音。強調其真正的紅色/綠色 TDD、YAGNI（你不需要它）和 DRY。
+- Claude Code：
+  ```bash
+  /plugin marketplace add obra/superpowers-marketplace
+  /plugin install superpowers@superpowers-marketplace
+  ```
+- Codex：见 `docs/README.codex.md`
+- OpenCode：见 `docs/README.opencode.md`
 
-接下來，一旦您說“開始”，它就會啟動“子代理驅動開發”流程，讓代理完成每個工程任務，檢查和審查他們的工作，然後繼續前進。對於克勞德來說，能夠一次自主工作幾個小時而不偏離你制定的計劃的情況並不罕見。
+### 2) 验证技能可用
 
-還有很多東西，但這是系統的核心。而且因為技能會自動觸發，所以你不需要做任何特別的事情。你的編碼特工擁有超能力。
+在新会话里直接描述任务，例如：
 
+- `请使用 aile-requirement-intake 处理 Jira Story ABC-123`
+- `请使用 aile-writing-plans 为 ABC-123 生成执行计划`
 
-## 贊助
+如果技能触发成功，代理会按对应 `SKILL.md` 的流程执行并产出文档。
 
-如果超級幫助大國你做了賺錢的事而且你很願意，如果你考慮[贊助我的開源工作](https://github.com/sponsors/obra).
+## Aile 工作流（推荐顺序）
 
-謝謝！
+1. `aile-docs-init`：项目文档初始化/回补（可选，项目级）
+2. `aile-requirement-intake`：需求接入，产出 `analysis.md`
+3. `aile-pencil-design`：UI 设计（有 UI 变更时）
+4. `aile-writing-plans`：产出可执行 `plan.md`
+5. `aile-executing-plans` 或 `aile-subagent-dev`：执行开发任务
+6. `aile-delivery-report`：整理 PR 交付说明并回链 Story
 
-- 傑西
+---
 
+## `aile-*` 技能使用方法
 
-## 安裝
+以下内容基于 `skills/aile-*/SKILL.md` 汇总。
 
-**注意：**安裝因平臺而異。 Claude Code 有一個內建的插件系統。 Codex 和 OpenCode 需要手動設定。
+| Skill | 适用阶段 | 何时使用 | 关键输入 | 核心产出 |
+|---|---|---|---|---|
+| `aile-docs-init`（skill name: `project-docs-init`） | 项目启动前/文档治理 | 新项目建文档，或已有代码回补文档 | 项目需求或现有代码库 | 完整项目文档体系（PRD/SAD/开发指南等） |
+| `aile-requirement-intake` | 阶段2 | 接入 Jira Story，澄清需求与风险 | Story 描述、AC、UI 示意 | `docs/plans/{Story-Key}/analysis.md` |
+| `aile-pencil-design` | 阶段2 | Story 涉及 UI/交互变更 | `analysis.md`、状态矩阵、交互路径 | `docs/plans/{Story-Key}/design.pen` + `analysis.md` UI 章节 |
+| `aile-writing-plans` | 阶段2 | 需要把需求转成可执行任务 | Story-Key、`analysis.md`、UI 方案 | `docs/plans/{Story-Key}/plan.md` |
+| `aile-executing-plans` | 阶段3 | 按计划分批执行并设置人工检查点 | `plan.md` | 分批实现与验证结果（按任务推进） |
+| `aile-subagent-dev` | 阶段3 | 任务可拆分，适合子代理并行/串行执行 | `analysis.md`、`plan.md` | 任务实现 + 双阶段审查（规格合规→代码质量） |
+| `aile-delivery-report` | 阶段4 | 提交 PR 前统一交付材料 | Story-Key、计划/设计引用、验证结果 | PR Description（模板化）+ 可选 Jira 回写 |
 
-### 克勞德代碼（來自插件市場）
+### 1) `aile-docs-init`
 
-在Claude Code中，首先註冊市場：
+- 用途：建立或回补项目文档体系。
+- 触发语句示例：
+  - `创建项目文档`
+  - `根据代码回补项目文档`
+- 要点：先判断“新项目模式”还是“代码回补模式”，再分阶段问答与产出。
 
-```bash
-/plugin marketplace add obra/superpowers-marketplace
+### 2) `aile-requirement-intake`
+
+- 用途：把 Story 输入转成结构化需求分析。
+- 触发语句示例：
+  - `请使用 aile-requirement-intake 处理 ABC-123`
+- 输出要求：必须写入 `docs/plans/{Story-Key}/analysis.md`，包含需求理解、风险、隐含需求、可测试 AC 初稿。
+
+### 3) `aile-pencil-design`
+
+- 用途：UI 设计证据化（MCP-first）。
+- 触发语句示例：
+  - `请基于 ABC-123 使用 aile-pencil-design 产出 design.pen`
+- 输出要求：
+  - 有 UI 变更：必须提供 `design.pen`
+  - 无 UI 变更：必须在 `analysis.md` 明确写“本 Story 无 UI 设计”及原因。
+
+### 4) `aile-writing-plans`
+
+- 用途：生成可执行的任务计划。
+- 触发语句示例：
+  - `请使用 aile-writing-plans 为 ABC-123 生成 plan.md`
+- 输出要求：`plan.md` 需覆盖任务拆解、测试用例、验收标准、执行顺序与状态管理。
+
+### 5) `aile-executing-plans`
+
+- 用途：按照计划分批执行任务并在批次间复盘。
+- 触发语句示例：
+  - `请使用 aile-executing-plans 执行 ABC-123 的计划`
+- 执行特征：先审查计划，再按批执行，批次完成后等待反馈，循环直至完成。
+
+### 6) `aile-subagent-dev`
+
+- 用途：通过子代理执行任务并做双阶段审查。
+- 触发语句示例：
+  - `请使用 aile-subagent-dev 执行 ABC-123`
+- 审查顺序：
+  1. 规格合规审查
+  2. 代码质量审查
+  3. 不通过则回到实现修复并复审
+
+### 7) `aile-delivery-report`
+
+- 用途：提交 PR 前统一交付内容。
+- 触发语句示例：
+  - `请使用 aile-delivery-report 生成 PR 描述`
+- 模板：`docs/templates/stage3-pr-description-template.md`
+- 最低要求：Story 链接、计划/设计引用、变更摘要、验证项勾选。
+
+---
+
+## 端到端调用示例
+
+```text
+1) 请使用 aile-requirement-intake 处理 ABC-123，并输出 analysis.md
+2) 请使用 aile-pencil-design 为 ABC-123 产出 design.pen（如果无 UI 变更请明确说明）
+3) 请使用 aile-writing-plans 为 ABC-123 生成 plan.md
+4) 请使用 aile-subagent-dev 按 plan.md 执行开发并完成审查
+5) 请使用 aile-delivery-report 生成 PR 描述并附验证清单
 ```
 
-然後從這個市場安裝插件：
+## 目录结构（关键）
 
-```bash
-/plugin install superpowers@superpowers-marketplace
-```
+- `skills/`：所有技能定义（含 `aile-*`）
+- `docs/templates/`：阶段模板与清单
+- `docs/plans/`：按 Story 保存的分析、设计、计划与执行痕迹
+- `docs/modules/aile-skill-mapping.md`：Aile 技能映射说明
 
-### 驗證安裝
+## 贡献
 
-開始一個新的會話並請求克勞德幫助解決一些會觸發技能的問題（e.g.，“幫我計劃此功能”或“讓我們調試此問題”）。克勞德應該會自動呼叫相關的超能力技能。
+1. 新增或调整技能：编辑对应 `skills/<skill-name>/SKILL.md`
+2. 同步更新文档：至少更新本 `README.md` 与相关模板说明
+3. 提交前验证：确保技能描述、产出路径、模板引用一致
 
-### 法典
+## License
 
-告訴法典：
-
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.codex/INSTALL.md
-```
-
-**詳細文件：** [docs/README.codex.md](docs/README.codex.md)
-
-### 開放代碼
-
-已知開放代碼：
-
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
-```
-
-**詳細文件：** [docs/README.opencode.md](docs/README.opencode.md)
-
-## 基本工作流程
-
-1. **頭腦風暴** - 在編寫代碼之前激活。通過問題提煉粗略的想法，探索替代方案，分段展示設計以供驗證。保存設計文檔。
-
-2. **using-git-worktrees** - 設計後批准激活。在新分支上創建獨立的工作區，運行項目設置，驗證乾淨的測試基線。
-
-3. **寫作計劃** - 使用批准的設計激活。將工作分解為小任務（每個任務 2-5 分鐘）。每個任務都有準確的文件路徑、完整的代碼、驗證步驟。
-
-4. **子代理驅動開發**或**執行計劃** - 按計劃啟動。透過兩階段審查（規範合規性，然後是程式碼品質）為每個任務分派新的子代理，或透過人工檢查點批次執行。
-
-5. **測試驅動開發** - 在實施期間激活。強制執行紅綠重構：編寫失敗的測試，觀察它失敗，編寫最少的代碼，觀察它通過，提交。刪除測試之前編寫的代碼。
-
-6. **請求代碼審查** - 在任務之間激活。根據計劃進行審查，按嚴重程度報告問題。關鍵問題阻礙進展。
-
-7. **完成開發分支** - 任務時啟動。驗證測試，提供選項（合併/PR/保留/丟棄），清理工作樹。
-
-**代理在執行任何任務之前都會檢查相關技能。 ** 強制性工作流程，而不是建議。
-
-## 裡面有什麼
-
-### 技能庫
-
-**測試**
-- **測試驅動開發** - 紅-綠-重構循環（含測試反模式參考）
-
-**偵錯**
-- **系統調試** - 4 階段根本原因流程（包括根本原因追蹤、深度防禦、基於條件的等待技術）
-- **完成前驗證** - 確保它確實已修復
-
-**合作**
-- **頭腦風暴** - 蘇格拉底式設計細化
-- **執行計劃** - 帶檢查點的批量執行
-- **dispatching-parallel-agents** - 並發子代理程序工作流程
-- **請求代碼審查** - 預審查清單
-- **接收代碼審查** - 回復反饋
-- **using-git-worktrees** - 傢俱開發分支
-- **完成開發分支** - 合併/PR決策工作流程
-- **子代理驅動開發** - 透過兩階段審查進行快速迭代（規範合規性，然後是程式碼品質）
-
-**元**
-- **寫作技能** - 依照最佳實踐創建新技能（包括測試方法）
-- **使用超能力** - 技能係統介紹
-
-## 哲學
-
-- **測試驅動開發** - 始終首先編寫測試
-- **系統性優於臨時性** - 流程優於猜測
-- **降低複雜性** - 簡單性作為主要目標
-- **索賠證據** - 在宣佈成功之前進行驗證
-
-閱讀更多：[克勞德·程式碼的超能力](https://blog.fsck.com/2025/10/09/superpowers/)
-
-## 貢獻
-
-技能直接存在於該儲存庫中。貢獻：
-
-1. 分叉儲存庫
-2. 為你的技能創造一個分支
-3. 遵循`writing-skills`創造和測試新技能的技能
-4. 提交公關
-
-看`skills/writing-skills/SKILL.md`獲取完整指南。
-
-## 更新中
-
-更新插件時技能會自動更新：
-
-```bash
-/plugin update superpowers
-```
-
-## 執照
-
-MIT 許可證 - 有關詳細信息，請參閱許可證文件
-
-## 支援
-
-- **問題**：https://github.com/obra/superpowers/issues
-- **市場**：https://github.com/obra/superpowers-marketplace
+MIT

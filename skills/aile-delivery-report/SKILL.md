@@ -1,6 +1,6 @@
 ---
 name: aile-delivery-report
-description: 面向团队工作流的交付报告技能（阶段4）。生成 PR Description（引用计划/设计/验证项），并（可选）同步 Jira Story 到 CODE REVIEW。
+description: 面向团队工作流的交付报告技能（阶段4）。生成 PR Description（引用计划/设计/验证项），并（可选）同步 Jira Story 。
 ---
 
 # Aile：交付报告（aile-delivery-report）
@@ -13,14 +13,10 @@ description: 面向团队工作流的交付报告技能（阶段4）。生成 PR
 - PR 必须声明验证项（测试/构建等）
 -（可选）自动把 PR 链接回写 Jira，并流转状态
 
-## 来源原 Skill
-
-- 来源：`skills/finishing-a-development-branch/SKILL.md`
-- 策略：保留原 Skill 作为基线与回退路径，本 Skill 复制改写聚焦“交付信息组织 + Jira 同步”。
 
 ## 输出契约
 
-PR Description 必须使用模板：`docs/templates/stage3-pr-description-template.md`。
+PR Description 必须使用模板：`docs-templates/stage3-pr-description-template.md`。
 
 至少包含：
 
@@ -35,4 +31,4 @@ PR Description 必须使用模板：`docs/templates/stage3-pr-description-templa
 2. 按模板生成 PR Description（可直接粘贴到 PR 平台）
 3.（可选）若启用 Jira MCP：
    - 在 Story Comment 贴 PR 链接并 @mention 开发负责人
-   - 将 Story 状态流转到 `CODE REVIEW`
+
