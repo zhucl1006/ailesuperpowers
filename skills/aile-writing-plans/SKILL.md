@@ -1,6 +1,6 @@
 ---
 name: aile-writing-plans
-description: 面向团队工作流的写计划技能（阶段2）。在开发前，将 Jira Story + UI 示意细化为可执行计划，并输出到 docs/plans/{Story-Key}/plan.md
+description: 面向团队工作流的写计划技能（阶段2）。在开发前，将 Jira Story + UI 示意细化为可执行计划，并输出到 docs/plans/{Story-Key}/plan.md（若已存在则使用 plan-{序号}.md）
 ---
 
 # Aile：写计划（aile-writing-plans）
@@ -9,7 +9,7 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
 
 这是团队自有的计划产出技能，用于把阶段 1（PM 需求 + UI 示意）的输入，转化为阶段 2 的标准化产物：
 
-- 计划主入口：`docs/plans/{Story-Key}/plan.md`
+- 计划主入口：`docs/plans/{Story-Key}/plan.md`（若已存在则使用 `plan-{序号}.md`）
 - 可选设计文件：`docs/plans/{Story-Key}/design.pen`
 
 假設工程師對我們的程式碼庫的背景為零且品味有問題，則編寫全面的實施計劃。記錄他們需要知道的一切：每個任務要接觸哪些文件、程式碼、測試、他們可能需要檢查的文檔、如何測試它。將整個計劃作為小任務交給他們。乾燥。亞格尼。時分驅動。頻繁提交。
@@ -26,7 +26,11 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
 
 ## 核心产出契约（必须遵守）
 
-1. 计划文件必须落在：`docs/plans/{Story-Key}/plan.md`
+1. 计划文件必须落在：`docs/plans/{Story-Key}/`
+   - 首次计划文件名固定为：`plan.md`
+   - 若 `plan.md` 已存在，新计划必须使用：`plan-{序号}.md`（如 `plan-1.md`、`plan-2.md`）
+   - `序号` 从 `1` 开始递增，始终取当前目录下下一个可用序号
+   - 禁止覆盖已有计划文件（包括 `plan.md` 与历史 `plan-{序号}.md`）
 2. 文件必须包含：
    - 状态管理（整体进度、任务状态总览、执行记录）
    - 需求理解与风险
@@ -35,7 +39,7 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
    - 测试用例与验收标准（可测试、无歧义）
    - AI 执行指引（明确执行顺序、约束、人工 Gate 节点）
 3. 每个任务必须以 TDD 方式描述：RED → 验证失败 → GREEN → 验证通过 → REFACTOR → 再次验证
-4. 启用 Jira MCP 时：任务拆解后必须为每个实施任务创建 Jira Sub-task，并回填到 `plan.md` 的 Jira 关联章节
+4. 启用 Jira MCP 时：任务拆解后必须为每个实施任务创建 Jira Sub-task，并回填到“当前计划文件”的 Jira 关联章节
 5. 状态管理必须可追踪：每个任务都要有 `状态`、`负责人`、`开始时间`、`完成时间`、`阻塞原因`，初始状态统一为 `待开始`
 
 ## 一口大小的任務粒度
@@ -57,7 +61,7 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
 - `description`：任务目标、范围、验收要点
 - `parent`：父 Story Key（例如 `ABC-123`）
 - `labels`：至少包含 Story-Key 与阶段标签（例如 `stage2-planning`）
-- `assignee`：可选；若未知可留空并在 `plan.md` 标注待分配
+- `assignee`：可选；若未知可留空并在“当前计划文件”标注待分配
 
 执行失败时必须降级为“仅本地产出 + 人工补录”，不得声称已完成 Jira 同步。
 
@@ -84,25 +88,42 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
 
 ### Step 3：写入计划文件
 
-将内容写入 `docs/plans/{Story-Key}/plan.md`，并确保其结构符合团队模板（参考 `docs-templates/stage2-plan-template.md`）。
+先确定“当前计划文件”：
+
+- 若 `docs/plans/{Story-Key}/plan.md` 不存在：写入 `plan.md`
+- 若 `plan.md` 已存在：按 `plan-1.md`、`plan-2.md`…顺序查找并写入首个不存在的文件
+- 不得覆盖任何已有计划文件
+
+将内容写入“当前计划文件”，并确保其结构符合团队模板（参考 `docs-templates/stage2-plan-template.md`）。
 
 - 初始化状态管理模块：
   - 填写“整体进度”
   - 建立“任务状态总览”（所有任务默认 `待开始`）
   - 建立“执行记录”并写入首条记录
 
-### Step 6：创建 Jira Sub-task（可选）
+### Step 4：创建 Jira Sub-task（可选）
 
 - 前置条件：Jira MCP 可用，且已确认父 Story Key
 - 按任务列表逐条调用 `jira_create_issue` 创建 Sub-task
 - 创建时写入字段：`summary`、`description`、`parent`、`labels`、`assignee`（可选）
-- 将创建结果回填 `plan.md`：
+- 将创建结果回填“当前计划文件”：
   - 成功：记录 Sub-task Key（如 `ABC-234`）
   - 失败：记录“未创建（原因：xxx，需人工补录）”
 
-### Step 6：Jira MCP 回写状态（可选）
+### Step 5：Jira MCP 回写状态（可选）
 - Jira状态变更时调用 `jira_update_issue` 更新对应 Story 的状态字段为 developing
 
+### Step 6：提交 Git 变更（需用户明确要求）
+
+- 仅当用户明确要求“提交代码/提交变更”时执行 `git commit`
+- 仅提交当前 Story 相关文件（至少包含当前计划文件，必要时包含 `design.pen`）
+- 提交前检查变更范围，避免混入无关文件：
+  - `git status`
+  - `git add docs/plans/{Story-Key}/`
+  - `git status`
+- 推荐提交信息模板：`docs(plan): add {Story-Key} {plan-file}`
+  - `plan-file` 示例：`plan.md`、`plan-1.md`
+- 提交命令示例：`git commit -m "docs(plan): add {Story-Key} {plan-file}"`
 
 ### Step 7：交接到执行阶段
 
