@@ -1,0 +1,2 @@
+I just finished user authentication changes and committed all code.
+Before merging, please run a full code review and classify findings by severity.

@@ -181,7 +181,7 @@ use skill tool to list skills
 使用 OpenCode 的原生`skill`加載特定技能的工具：
 
 ```
-use skill tool to load superpowers/brainstorming
+use skill tool to load superpowers/aile-requirement-analysis
 ```
 
 ### 個人技能
@@ -302,7 +302,7 @@ git pull
 
 ### 引導程序未出現
 
-1. 驗證 using-superpowers 技能是否存在：`ls ~/.config/opencode/superpowers/skills/using-superpowers/SKILL.md`
+1. 驗證 aile-using-superpowers 技能是否存在：`ls ~/.config/opencode/superpowers/skills/aile-using-superpowers/SKILL.md`
 2. 檢查 OpenCode 版本支持`experimental.chat.system.transform`鉤
 3. 插件更改後重新啟動 OpenCode
 

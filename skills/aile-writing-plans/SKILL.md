@@ -5,6 +5,11 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
 
 # Aile：写计划（aile-writing-plans）
 
+## 来源原 Skill
+
+- 来源：superpowers 计划编写能力（已迁移为 aile-only）
+- 策略：保留可执行任务拆解与状态管理契约，并强化 Jira Sub-task 规则。
+
 ## 概述
 
 这是团队自有的计划产出技能，用于把阶段 1（PM 需求 + UI 示意）的输入，转化为阶段 2 的标准化产物：

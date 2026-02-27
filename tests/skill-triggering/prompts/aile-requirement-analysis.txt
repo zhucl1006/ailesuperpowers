@@ -1,0 +1,9 @@
+The tests are failing with this error:
+
+```
+FAIL src/utils/parser.test.ts
+  ● Parser › should handle nested objects
+    TypeError: Cannot read property \"value\" of undefined
+```
+
+Please use aile-requirement-analysis to structure the problem, risks, and next-step plan.

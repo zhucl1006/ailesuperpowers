@@ -1,0 +1,7 @@
+Here is the spec for a new authentication system:
+- Register with email/password
+- Login and receive JWT token
+- Protected routes require valid JWT
+- Tokens expire after 24 hours
+
+Please break this into an executable implementation plan.

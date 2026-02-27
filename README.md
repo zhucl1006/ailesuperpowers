@@ -6,7 +6,18 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 
 ## 快速开始
 
-### 1) 安装（按平台）
+### 0) 运行前置依赖（必须）
+
+> 本仓库是 Aile 团队流程型 Skill 集合，默认依赖外部能力。未满足依赖时，部分 Skill 会降级为“仅本地产出 + 人工补录”。
+
+| 依赖 | 为什么必须 | 最低要求 |
+|---|---|---|
+| Jira MCP（推荐 `mcp-atlassian`） | `aile-requirement-analysis` / `aile-writing-plans` / `aile-delivery-report` 需要读写 Jira Story、Sub-task、Comment、状态流转 | 可调用 `jira_get_issue`、`jira_create_issue`、`jira_update_issue`、`jira_transition_issue`、`jira_add_comment` |
+| `google-drive` Skill（来自 `sanjay3290/ai-skills`） | Aile 团队流程要求具备云端文档/资料读取能力，便于需求与交付材料联动 | 在当前 Agent 环境可触发 `google-drive` Skill |
+
+Jira MCP 配置参考：`docs/guides/JIRA-MCP-INTEGRATION.md`（含最小 Tool 契约与环境变量约定）。
+
+### 1) 安装 Superpowers（按平台）
 
 - Claude Code：
   ```bash
@@ -16,7 +27,19 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 - Codex：见 `docs/README.codex.md`
 - OpenCode：见 `docs/README.opencode.md`
 
-### 2) 验证技能可用
+### 2) 安装外部依赖
+
+1. 安装并配置 Jira MCP（推荐 `mcp-atlassian`）。
+2. 安装 `google-drive` Skill（来源：<https://github.com/sanjay3290/ai-skills>）：
+   ```bash
+   npx skills add sanjay3290/ai-skills --skill google-drive
+   ```
+   如需指定 Codex Agent：
+   ```bash
+   npx skills add sanjay3290/ai-skills --skill google-drive -a codex
+   ```
+
+### 3) 验证技能可用
 
 在新会话里直接描述任务，例如：
 

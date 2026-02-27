@@ -54,8 +54,8 @@ export const SuperpowersPlugin = async ({ client, directory }) => {
 
   // 生成 bootstrap 內容的輔助函式
   const getBootstrapContent = () => {
-    // 嘗試載入 using-superpowers 技能
-    const skillPath = path.join(superpowersSkillsDir, 'using-superpowers', 'SKILL.md');
+    // 嘗試載入 aile-using-superpowers 技能
+    const skillPath = path.join(superpowersSkillsDir, 'aile-using-superpowers', 'SKILL.md');
     if (!fs.existsSync(skillPath)) return null;
 
     const fullContent = fs.readFileSync(skillPath, 'utf8');
@@ -75,7 +75,7 @@ Superpowers 技能位於 \`${configDir}/skills/superpowers/\`
     return `<EXTREMELY_IMPORTANT>
 你已啟用 superpowers。
 
-**重要：下方已包含 using-superpowers 的完整內容，而且已經載入。你目前正在遵循它。不要再次用 skill 工具重複載入 "using-superpowers"。**
+**重要：下方已包含 aile-using-superpowers 的完整內容，而且已經載入。你目前正在遵循它。不要再次用 skill 工具重複載入 "aile-using-superpowers"。**
 
 ${content}
 

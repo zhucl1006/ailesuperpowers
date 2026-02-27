@@ -25,7 +25,7 @@
 
 ### 運行具體測試：
 ```bash
-./run-skill-tests.sh --test test-subagent-driven-development.sh
+./run-skill-tests.sh --test test-aile-subagent-dev.sh
 ```
 
 ### 以詳細輸出運作：
@@ -82,7 +82,7 @@ echo "=== All tests passed ==="
 
 ### 快速測試（預設運行）
 
-#### test-subagent-driven-development.sh
+#### test-aile-subagent-dev.sh
 測試技能內容和要求（約 2 分鐘）：
 - 技能負載和可訪問性
 - 工作流程排序（規範合規性優先於代碼質量）
@@ -94,7 +94,7 @@ echo "=== All tests passed ==="
 
 ### 整合測試（使用--integration標誌）
 
-#### test-subagent-driven-development-integration.sh
+#### test-aile-subagent-dev-integration.sh
 完整工作流程執行測試（約 10-30 分鐘）：
 - 使用 Node.js 設定建立真實的測試項目
 - 建立包含 2 項任務的實施計劃
@@ -134,7 +134,7 @@ echo "=== All tests passed ==="
 
 和`--verbose`，您將看到完整的克勞德輸出：
 ```bash
-./run-skill-tests.sh --verbose --test test-subagent-driven-development.sh
+./run-skill-tests.sh --verbose --test test-aile-subagent-dev.sh
 ```
 
 如果沒有詳細訊息，則僅顯示失敗的輸出。

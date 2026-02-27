@@ -73,7 +73,7 @@ flowchart LR
 sequenceDiagram
     participant Claude
     participant Hook as hooks/session-start.sh
-    participant Skill as skills/using-superpowers/SKILL.md
+    participant Skill as skills/aile-using-superpowers/SKILL.md
     Claude->>Hook: SessionStart event
     Hook->>Skill: Read content
     Hook-->>Claude: JSON additionalContext payload
@@ -86,7 +86,7 @@ sequenceDiagram
 sequenceDiagram
     participant OpenCode
     participant Plugin as .opencode/plugins/superpowers.js
-    participant Skills as skills/using-superpowers/SKILL.md
+    participant Skills as skills/aile-using-superpowers/SKILL.md
     OpenCode->>Plugin: chat.system.transform
     Plugin->>Skills: Read + strip frontmatter
     Plugin-->>OpenCode: Append EXTREMELY_IMPORTANT context

@@ -28,7 +28,7 @@ if ! rg -n "来源原 Skill" "$skill_file" >/dev/null; then
 fi
 
 # Output contract marker
-if ! rg -n "docs/plans/\{Story-Key\}/analysis\.md" "$skill_file" >/dev/null; then
+if ! rg -n "docs/plans/\{Story-Key\}/plan\.md" "$skill_file" >/dev/null; then
   echo "FAIL: missing output contract path in $skill_file" >&2
   exit 1
 fi

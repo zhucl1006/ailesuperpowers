@@ -34,7 +34,7 @@
 
 ## 5. 典型调用时机
 
-- `aile-requirement-intake`：读取 Story，写入需求摘要 Comment
+- `aile-requirement-analysis`：读取 Story，写入需求摘要 Comment
 - `aile-writing-plans`：创建 Sub-task、回写细化后的 Acceptance Criteria
 - `aile-tdd` / `aile-subagent-dev`：更新 Sub-task 状态
 - `aile-delivery-report`：写入 PR 链接 Comment，流转 Story 状态

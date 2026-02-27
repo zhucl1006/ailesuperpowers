@@ -1,6 +1,6 @@
 # 測試超能力技能
 
-本文檔描述如何測試超級技能，特別是複雜技能的整合測試，例如`subagent-driven-development`.
+本文檔描述如何測試超級技能，特別是複雜技能的整合測試，例如`aile-subagent-dev`.
 
 ## 概述
 
@@ -12,7 +12,7 @@
 tests/
 ├── claude-code/
 │   ├── test-helpers.sh                    # Shared test utilities
-│   ├── test-subagent-driven-development-integration.sh
+│   ├── test-aile-subagent-dev-integration.sh
 │   ├── analyze-token-usage.py             # Token analysis tool
 │   └── run-skill-tests.sh                 # Test runner (if exists)
 ```
@@ -24,9 +24,9 @@ tests/
 整合測試使用實際技能執行真實的克勞德程式碼會話：
 
 ```bash
-# Run the subagent-driven-development integration test
+# Run the aile-subagent-dev integration test
 cd tests/claude-code
-./test-subagent-driven-development-integration.sh
+./test-aile-subagent-dev-integration.sh
 ```
 
 **注意：** 整合測試可能需要 10-30 分鐘，因為它們使用多個子代理執行實際實施計劃。
@@ -41,7 +41,7 @@ cd tests/claude-code
 
 ### 它測試什麼
 
-集成測試驗證了`subagent-driven-development`技能正確：
+集成測試驗證了`aile-subagent-dev`技能正確：
 
 1. **計劃加載**：開始時閱讀一次計劃
 2. **完整任務文本**：向子代理提供完整的任務描述（不會讓他們讀取文件）
@@ -67,7 +67,7 @@ cd tests/claude-code
 
 ```
 ========================================
- Integration Test: subagent-driven-development
+ Integration Test: aile-subagent-dev
 ========================================
 
 Test project: /tmp/tmp.xyz123
@@ -75,7 +75,7 @@ Test project: /tmp/tmp.xyz123
 === Verification Tests ===
 
 Test 1: Skill tool invoked...
-  [PASS] subagent-driven-development skill was invoked
+  [PASS] aile-subagent-dev skill was invoked
 
 Test 2: Subagents dispatched...
   [PASS] 7 subagents dispatched

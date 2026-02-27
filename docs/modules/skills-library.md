@@ -16,26 +16,23 @@
 - 調試和驗證工作流程
 - 寫作和維護技能的元技能
 
-## 3.當前技能（核心）
+## 3.當前技能（aile-only）
 
-- `brainstorming`
-- `writing-plans`
-- `executing-plans`
-- `subagent-driven-development`
-- `requesting-code-review`
-- `receiving-code-review`
-- `test-driven-development`
-- `systematic-debugging`
-- `verification-before-completion`
-- `dispatching-parallel-agents`
-- `using-git-worktrees`
-- `finishing-a-development-branch`
-- `writing-skills`
-- `using-superpowers`
+- `aile-using-superpowers`
+- `aile-docs-init`
+- `aile-requirement-analysis`
+- `aile-pencil-design`
+- `aile-writing-plans`
+- `aile-executing-plans`
+- `aile-subagent-dev`
+- `aile-tdd`
+- `aile-code-review`
+- `aile-delivery-report`
+- `aile-git-worktrees`
 
-## 3.1 團隊技能（Aile，自定義）
+## 3.1 技能映射與增強
 
-這些技能以「保留原 Skill + 複製改寫」方式落地，作為團隊流程語義層（`aile-*`）。
+當前倉庫採用 aile-only 命名策略，所有技能統一使用 `aile-*` 前綴。
 
 - 映射與增強點：`docs/modules/aile-skill-mapping.md`
 

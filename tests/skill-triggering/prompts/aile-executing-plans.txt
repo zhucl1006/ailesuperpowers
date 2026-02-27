@@ -1,0 +1,2 @@
+I have an implementation plan at docs/plans/2024-01-15-auth-system.md.
+Please execute it in small batches with checkpoints and verification output.

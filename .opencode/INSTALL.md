@@ -51,7 +51,7 @@ use skill tool to list skills
 ### 載入技能
 
 ```
-use skill tool to load superpowers/brainstorming
+use skill tool to load superpowers/aile-requirement-analysis
 ```
 
 ### 個人技能

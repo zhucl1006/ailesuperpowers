@@ -5,6 +5,11 @@ description: 面向团队工作流的子代理开发技能（阶段3）。基于
 
 # Aile：子代理驱动开发（aile-subagent-dev）
 
+## 来源原 Skill
+
+- 来源：superpowers 子代理开发能力（已迁移为 aile-only）
+- 策略：保留“实现→规格审查→质量审查”双阶段循环，并对齐团队 Jira 流转。
+
 ## 概述
 
 在团队流程中，本技能用于阶段 3 的任务执行：
@@ -25,16 +30,16 @@ digraph when_to_use {
     "Have implementation plan?" [shape=diamond];
     "Tasks mostly independent?" [shape=diamond];
     "Stay in this session?" [shape=diamond];
-    "subagent-driven-development" [shape=box];
-    "executing-plans" [shape=box];
+    "aile-subagent-dev" [shape=box];
+    "aile-executing-plans" [shape=box];
     "Manual execution or brainstorm first" [shape=box];
 
     "Have implementation plan?" -> "Tasks mostly independent?" [label="yes"];
     "Have implementation plan?" -> "Manual execution or brainstorm first" [label="no"];
     "Tasks mostly independent?" -> "Stay in this session?" [label="yes"];
     "Tasks mostly independent?" -> "Manual execution or brainstorm first" [label="no - tightly coupled"];
-    "Stay in this session?" -> "subagent-driven-development" [label="yes"];
-    "Stay in this session?" -> "executing-plans" [label="no - parallel session"];
+    "Stay in this session?" -> "aile-subagent-dev" [label="yes"];
+    "Stay in this session?" -> "aile-executing-plans" [label="no - parallel session"];
 }
 ```
 
@@ -68,7 +73,7 @@ digraph process {
     "Read plan, extract all tasks with full text, note context, create TodoWrite" [shape=box];
     "More tasks remain?" [shape=diamond];
     "Dispatch final code reviewer subagent for entire implementation" [shape=box];
-    "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
+    "Use aile-delivery-report" [shape=box style=filled fillcolor=lightgreen];
 
     "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (./implementer-prompt.md)";
     "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
@@ -87,7 +92,7 @@ digraph process {
     "Mark task complete in TodoWrite" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use superpowers:finishing-a-development-branch";
+    "Dispatch final code reviewer subagent for entire implementation" -> "Use aile-delivery-report";
 }
 ```
 
@@ -239,16 +244,16 @@ Done!
 ## 一體化
 
 **所需的工作流程技能：**
-- **超級能力：使用-git-worktrees** - 必需：在開始之前設置隔離的工作區
-- **超級大國：寫作計劃** - 創建該技能執行的計劃
-- **superpowers:requesting-code-review** - 審閱者子代理方案的方案碼審閱模板
-- **超級大國：完成開發分支** - 在完成所有任務後完成開發
+- **超級能力：aile-git-worktrees** - 必需：在開始之前設置隔離的工作區
+- **超級大國：aile-writing-plans** - 創建該技能執行的計劃
+- **aile-code-review** - 審閱者子代理方案的方案碼審閱模板
+- **超級大國：aile-delivery-report** - 在完成所有任務後完成開發
 
 **子代理應使用：**
-- **超級能力：測試驅動開發** - 子代理程式遵循TDD執行每項任務
+- **超級能力：aile-tdd** - 子代理程式遵循TDD執行每項任務
 
 **替代工作流程：**
-- **superpowers:executing-plans** - 用於端點會話而不是相同會話執行
+- **aile-executing-plans** - 用於端點會話而不是相同會話執行
 
 
 ## 执行流程

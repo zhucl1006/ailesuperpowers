@@ -13,7 +13,7 @@ MAX_TURNS="${3:-3}"
 
 if [ -z "$SKILL_NAME" ] || [ -z "$PROMPT_FILE" ]; then
     echo "Usage: $0 <skill-name> <prompt-file> [max-turns]"
-    echo "Example: $0 systematic-debugging ./test-prompts/debugging.txt"
+    echo "Example: $0 aile-requirement-analysis ./test-prompts/debugging.txt"
     exit 1
 fi
 
@@ -65,15 +65,15 @@ if grep -q '"name":"Skill"' "$LOG_FILE" && grep -qE "$SKILL_PATTERN" "$LOG_FILE"
     TRIGGERED=true
 else
     # Compatibility fallback:
-    # requesting-code-review may directly dispatch code-reviewer agent
+    # aile-code-review may directly dispatch code-reviewer agent
     # without explicit Skill tool invocation in some model builds.
-    if [ "$SKILL_NAME" = "requesting-code-review" ] && grep -qi "code-reviewer\\|程式碼審查" "$LOG_FILE"; then
+    if [ "$SKILL_NAME" = "aile-code-review" ] && grep -qi "code-reviewer\\|程式碼審查" "$LOG_FILE"; then
         echo "✅ PASS: '$SKILL_NAME' fallback matched (code-reviewer behavior detected)"
         TRIGGERED=true
     # Compatibility fallback:
-    # dispatching-parallel-agents may execute parallel-agent behavior
+    # aile-subagent-dev may execute parallel-agent behavior
     # without explicit Skill tool invocation in some model builds.
-    elif [ "$SKILL_NAME" = "dispatching-parallel-agents" ] && grep -qi "parallel\\|並行\\|并行\\|子代理\\|subagent" "$LOG_FILE"; then
+    elif [ "$SKILL_NAME" = "aile-subagent-dev" ] && grep -qi "parallel\\|並行\\|并行\\|子代理\\|subagent" "$LOG_FILE"; then
         echo "✅ PASS: '$SKILL_NAME' fallback matched (parallel-agent behavior detected)"
         TRIGGERED=true
     else

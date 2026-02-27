@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Offline checks for task 5: Jira MCP docs and aile-requirement-intake.
+# Offline checks for task 5: Jira MCP docs and aile-requirement-analysis.
 set -euo pipefail
 
 required_files=(
-  "skills/aile-requirement-intake/SKILL.md"
+  "skills/aile-requirement-analysis/SKILL.md"
   "docs/guides/JIRA-MCP-INTEGRATION.md"
   "docs/templates/jira-comment-templates.md"
 )
@@ -20,8 +20,8 @@ if [ "$missing" -ne 0 ]; then
   exit 1
 fi
 
-skill_file="skills/aile-requirement-intake/SKILL.md"
-if ! rg -n "^name:\s*aile-requirement-intake\s*$" "$skill_file" >/dev/null; then
+skill_file="skills/aile-requirement-analysis/SKILL.md"
+if ! rg -n "^name:\s*aile-requirement-analysis\s*$" "$skill_file" >/dev/null; then
   echo "FAIL: frontmatter name mismatch in $skill_file" >&2
   exit 1
 fi

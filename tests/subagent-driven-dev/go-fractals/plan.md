@@ -1,6 +1,6 @@
 # Go Fractals CLI - 實施計劃
 
-執行此計劃使用`superpowers:subagent-driven-development`技能。
+執行此計劃使用`superpowers:aile-subagent-dev`技能。
 
 ## 情境
 

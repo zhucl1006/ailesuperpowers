@@ -19,7 +19,7 @@
 
 ### 目的
 
-- 確保`using-superpowers`指導在會話開始時加載
+- 確保`aile-using-superpowers`指導在會話開始時加載
 - 檢測到遺留技能位置時提供遷移警告
 
 ## 3. 法典整合
@@ -40,7 +40,7 @@
 
 - 插件入口點：`.opencode/plugins/superpowers.js`
 - 用途`experimental.chat.system.transform`附加引導內容
-- 讀`skills/using-superpowers/SKILL.md`直接並註入工具映射指導
+- 讀`skills/aile-using-superpowers/SKILL.md`直接並註入工具映射指導
 
 ### 目的
 
@@ -51,10 +51,7 @@
 
 文件下`commands/`提供強制特定超能力技能的簡短指令別名：
 
-- `commands/brainstorm.md`
-- `commands/write-plan.md`
-- `commands/execute-plan.md`
-- `commands/aile-requirement-intake.md`
+- `commands/aile-requirement-analysis.md`
 - `commands/aile-write-plan.md`
 - `commands/aile-pencil-design.md`
 - `commands/aile-tdd.md`

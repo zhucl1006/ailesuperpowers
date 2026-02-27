@@ -5,6 +5,11 @@ description: 面向团队工作流的交付报告技能（阶段4）。生成 PR
 
 # Aile：交付报告（aile-delivery-report）
 
+## 来源原 Skill
+
+- 来源：superpowers 交付收尾能力（已迁移为 aile-only）
+- 策略：保留收尾决策与交付说明结构，并强化团队 PR/Jira 契约。
+
 ## 概述
 
 本技能在提交 PR 时使用，目标是让 CR/QA/PM 在一个入口完成验收：

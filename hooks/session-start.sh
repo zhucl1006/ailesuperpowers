@@ -14,8 +14,8 @@ if [ -d "$legacy_skills_dir" ]; then
     warning_message="\n\n<important-reminder>在你看到此訊息後的第一個回覆中，你必須告知使用者：⚠️ **警告：**Superpowers 現在使用 Claude Code 的技能系統。放在 ~/.config/superpowers/skills 的自訂技能將不會被讀取。請改放到 ~/.claude/skills。若要移除此提醒，請刪除 ~/.config/superpowers/skills</important-reminder>"
 fi
 
-# 讀取 using-superpowers 內容
-using_superpowers_content=$(cat "${PLUGIN_ROOT}/skills/using-superpowers/SKILL.md" 2>&1 || echo "讀取 using-superpowers 技能時發生錯誤")
+# 讀取 aile-using-superpowers 內容
+using_superpowers_content=$(cat "${PLUGIN_ROOT}/skills/aile-using-superpowers/SKILL.md" 2>&1 || echo "讀取 aile-using-superpowers 技能時發生錯誤")
 
 # 使用 bash 參數替換為 JSON 嵌入內容做跳脫。
 # 每個 ${s//old/new} 都是單次 C 層級處理，
@@ -38,7 +38,7 @@ cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "<EXTREMELY_IMPORTANT>\n你已啟用 superpowers。\n\n**以下是 'superpowers:using-superpowers' 技能的完整內容（技能使用入門）。其他技能請透過 Skill 工具載入：**\n\n${using_superpowers_escaped}\n\n${warning_escaped}\n</EXTREMELY_IMPORTANT>"
+    "additionalContext": "<EXTREMELY_IMPORTANT>\n你已啟用 superpowers。\n\n**以下是 'superpowers:aile-using-superpowers' 技能的完整內容（技能使用入門）。其他技能請透過 Skill 工具載入：**\n\n${using_superpowers_escaped}\n\n${warning_escaped}\n</EXTREMELY_IMPORTANT>"
   }
 }
 EOF

@@ -1,0 +1,7 @@
+I need to add a new feature to validate email addresses. It should:
+- Check that there is an @ symbol
+- Check at least one character before @
+- Check there is a dot in the domain
+- Return true/false
+
+Please implement with strict TDD.

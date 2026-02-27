@@ -1,0 +1,2 @@
+I already have a plan at docs/plans/auth-system.md.
+Please execute it with subagents, and ensure spec review happens before code quality review.

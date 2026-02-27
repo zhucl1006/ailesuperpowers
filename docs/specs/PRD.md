@@ -62,7 +62,7 @@ Superpowers 是一個用於編碼代理的可重用技能庫和工作流程框�
 |身份證 |要求|狀態 |證據|
 |---|---|---|---|
 | FR-001 |技能必須是可發現的`SKILL.md`帶有 frontmatter 元數據的單元 |已實施 |`skills/*/SKILL.md`, `lib/skills-core.js` |
-| FR-002 |必須支援核心工作流程技能（腦力激盪→計畫→執行→審查）|已實施 |`skills/brainstorming/SKILL.md`, `skills/writing-plans/SKILL.md`, `skills/subagent-driven-development/SKILL.md`, `skills/requesting-code-review/SKILL.md` |
+| FR-002 |必須支援核心工作流程技能（需求接入→計畫→執行→審查）|已實施 |`skills/aile-requirement-analysis/SKILL.md`, `skills/aile-writing-plans/SKILL.md`, `skills/aile-subagent-dev/SKILL.md`, `skills/aile-code-review/SKILL.md` |
 | FR-003 | Claude 代碼集成必須在會話開始時注入引導上下文 |已實施 |`hooks/hooks.json`, `hooks/session-start.sh` |
 | FR-004 | Codex 設置必須支持通過文件系統鏈接發現本機技能 |已實施 |`.codex/INSTALL.md`, `docs/README.codex.md` |
 | FR-005 | OpenCode 外掛程式必須透過系統轉換注入使用超能力指導 |已實作 |`.opencode/plugins/superpowers.js` |

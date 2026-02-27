@@ -8,12 +8,12 @@
 
 ## 2、責任
 
-提供啟動時上下文注入，以便代理始終接收`using-superpowers`會議開始時的指導。
+提供啟動時上下文注入，以便代理始終接收`aile-using-superpowers`會議開始時的指導。
 
 ## 3. 運行時行為
 
 1. Claude SessionStart 事件匹配`startup|resume|clear|compact`觸發鉤子
-2. `session-start.sh`讀`skills/using-superpowers/SKILL.md`
+2. `session-start.sh`讀`skills/aile-using-superpowers/SKILL.md`
 3. 腳本 JSON 轉義內容並發出 Claude 插件運行時所需的鉤子負載格式
 4. 如果遺留路徑`~/.config/superpowers/skills`存在，腳本添加遷移警告文本
 

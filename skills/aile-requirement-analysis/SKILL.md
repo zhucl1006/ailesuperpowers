@@ -3,7 +3,12 @@ name: aile-requirement-analysis
 description: 面向团队工作流的需求接入技能（阶段2）。读取 Jira Story 的需求与 UI 示意，结构化输出需求摘要/风险/隐含需求，并（可选）回写 Jira Comment。
 ---
 
-# Aile：需求接入（aile-requirement-intake）
+# Aile：需求接入（aile-requirement-analysis）
+
+## 来源原 Skill
+
+- 来源：superpowers 需求澄清能力（已迁移为 aile-only）
+- 策略：保留“单问题推进 + 结构化分析”流程，并增强 Jira Story 接入契约。
 
 ## 概述
 
@@ -39,8 +44,8 @@ description: 面向团队工作流的需求接入技能（阶段2）。读取 Ji
 
 **實施（如果繼續）：**
 - 問：“準備好實施了嗎？”
-- 使用超能力：using-git-worktrees 創建隔離的工作區
-- 使用超能力：寫作計劃制定詳細的實施計劃
+- 使用超能力：aile-git-worktrees 創建隔離的工作區
+- 使用超能力：aile-writing-plans 制定詳細的實施計劃
 
 ## Skill關鍵原則
 

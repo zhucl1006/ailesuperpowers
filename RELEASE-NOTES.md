@@ -1,5 +1,32 @@
 # 超能力發行說明
 
+## v4.2.2 (2026-02-27)
+
+### 重大變化
+
+**Aile-only 技能命名落地（破壞性變更）**
+
+本版本將倉庫技能體系正式收斂為 `aile-*` 前綴，移除 `skills/` 下所有非 `aile-*` 目錄，並同步完成 bootstrap、命令層、文檔與測試引用遷移。
+
+- 刪除非 `aile-*` 技能目錄（含 `using-superpowers`、`writing-plans`、`subagent-driven-development` 等）
+- 新增並啟用 `aile-using-superpowers` 作為啟動引導技能
+- 新增 `aile-git-worktrees`、`aile-tdd`、`aile-code-review`，補齊原有依賴能力
+- Hook 與 OpenCode 外掛改為讀取 `skills/aile-using-superpowers/SKILL.md`
+- 命令層刪除舊入口（`brainstorm.md`、`write-plan.md`、`execute-plan.md`）
+
+### 遷移說明
+
+- 若你仍在使用舊技能名，請改為對應的 `aile-*` 名稱
+- 若你依賴 OpenCode bootstrap，請確認安裝後存在：
+  - `~/.config/opencode/superpowers/skills/aile-using-superpowers/SKILL.md`
+
+### 測試
+
+- ✅ `bash "tests/docs/run-all.sh"`
+- ✅ `bash "tests/opencode/test-plugin-loading.sh"`
+- ✅ `bash "tests/opencode/test-skills-core.sh"`
+- ⚠️ `bash "tests/opencode/test-tools.sh"` 依賴本機 OpenCode provider；在無 provider 環境下未完全通過
+
 ## v4.2.1 (2026-02-13)
 
 ### 改進

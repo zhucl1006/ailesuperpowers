@@ -62,7 +62,7 @@ export const SuperpowersPlugin = async ({ client, directory }) => PluginHooks;
 - `experimental.chat.system.transform`
   - 將引導上下文附加到`output.system`
   - 注入區塊包括：
-    - `using-superpowers`身體內容
+    - `aile-using-superpowers`身體內容
     - 工具映射指導
     - 技能目錄指導
 

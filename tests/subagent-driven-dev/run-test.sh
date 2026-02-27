@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run a subagent-driven-development test
+# Run a aile-subagent-dev test
 # Usage: ./run-test.sh <test-name> [--plugin-dir <path>]
 #
 # Example:
@@ -43,7 +43,7 @@ fi
 
 # Create timestamped output directory
 TIMESTAMP=$(date +%s)
-OUTPUT_BASE="/tmp/superpowers-tests/$TIMESTAMP/subagent-driven-development"
+OUTPUT_BASE="/tmp/superpowers-tests/$TIMESTAMP/aile-subagent-dev"
 OUTPUT_DIR="$OUTPUT_BASE/$TEST_NAME"
 mkdir -p "$OUTPUT_DIR"
 
@@ -60,7 +60,7 @@ echo ""
 
 # Prepare the prompt
 PLAN_PATH="$OUTPUT_DIR/project/plan.md"
-PROMPT="Execute this plan using superpowers:subagent-driven-development. The plan is at: $PLAN_PATH"
+PROMPT="Execute this plan using superpowers:aile-subagent-dev. The plan is at: $PLAN_PATH"
 
 # Run Claude with JSON output for token tracking
 LOG_FILE="$OUTPUT_DIR/claude-output.json"

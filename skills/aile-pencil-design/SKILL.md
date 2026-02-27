@@ -17,7 +17,7 @@ description: 面向团队工作流的 Pencil 设计技能（阶段2）。基于�
 
 ## 来源原 Skill
 
-- 来源：`skills/brainstorming/SKILL.md` + `skills/writing-plans/SKILL.md`
+- 来源：superpowers 原始需求分析与计划能力（已迁移为 aile-only）
 - 策略：保留原 Skill 作为基线与回退路径，本 Skill 复制改写并强化 Pencil MCP 执行规范。
 
 ## 何时使用 / 何时跳过
@@ -116,7 +116,7 @@ PR 中至少包含：
 
 - `analysis.md`
 - `design.pen`（如有 UI 变更）
-- `docs/templates/g2-design-review-checklist.md` 对应自检结果
+- `docs-templates/g2-design-review-checklist.md` 对应自检结果
 
 ## 失败兜底与恢复策略
 

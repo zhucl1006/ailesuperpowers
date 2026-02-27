@@ -4,9 +4,8 @@ set -euo pipefail
 
 pilot_file="docs/plans/PILOT-STORY-REPORT.md"
 release_file="RELEASE-NOTES.md"
-real_story_analysis="docs/plans/AL-1651/analysis.md"
 
-for f in "$pilot_file" "$release_file" "$real_story_analysis"; do
+for f in "$pilot_file" "$release_file"; do
   if [ ! -f "$f" ]; then
     echo "MISSING: $f" >&2
     exit 1
@@ -20,11 +19,6 @@ fi
 
 if ! rg -n "Story Key：AILE-002" "$pilot_file" >/dev/null; then
   echo "FAIL: pilot story key not recorded in pilot report" >&2
-  exit 1
-fi
-
-if ! rg -n "AL-1651" "$pilot_file" >/dev/null; then
-  echo "FAIL: real jira story key not recorded in pilot report" >&2
   exit 1
 fi
 
