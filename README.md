@@ -16,6 +16,7 @@ Aile Superpowers 是基于 Superpowers 的团队工作流增强版，目标是�
 | `google-drive` Skill（来自 `sanjay3290/ai-skills`） | Aile 团队流程要求具备云端文档/资料读取能力，便于需求与交付材料联动 | 在当前 Agent 环境可触发 `google-drive` Skill |
 
 Jira MCP 配置参考：`docs/guides/JIRA-MCP-INTEGRATION.md`（含最小 Tool 契约与环境变量约定）。
+Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`（含产品目录路由、历史版本保留策略）。
 
 ### 1) 安装 Superpowers（按平台）
 

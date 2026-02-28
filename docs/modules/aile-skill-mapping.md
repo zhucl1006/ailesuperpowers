@@ -14,7 +14,8 @@
 
 | 团队 Skill | 来源基线 | 阶段 | 团队增强点 | 负责人 | 状态 |
 |---|---|---|---|---|---|
-| `aile-requirement-analysis` | superpowers 需求澄清能力（已迁移为 aile-only） | 2 | Jira Story 结构化解析、风险识别、输出需求摘要 |  | 已完成 |
+| `aile-docs-init` | superpowers 项目文档初始化能力（已迁移为 aile-only） | 项目级 | 产出 `docs/specs/*` 与 `docs/modules/*`，并通过 `google-drive` 同步到产品目录（含历史版本保留最近 5 版） |  | 已完成 |
+| `aile-requirement-analysis` | superpowers 需求澄清能力（已迁移为 aile-only） | 2 | Jira Story 结构化解析、风险识别、输出需求摘要、模块文档回填 `docs/modules/{module}.md` + `google-drive` 自动同步 |  | 已完成 |
 | `aile-writing-plans` | superpowers 计划拆解能力（已迁移为 aile-only） | 2 | 输出 `docs/plans/{Story-Key}/plan.md`、Sub-task 自动创建 + 结果回填、AC 细化回写 |  | 已完成 |
 | `aile-pencil-design` | superpowers 需求分析 + 计划能力（已迁移为 aile-only） | 2 | Pencil MCP 执行规范、分批作图门禁、G2 证据化审查清单 |  | 已完成 |
 | `aile-executing-plans` | superpowers 执行计划能力（已迁移为 aile-only） | 3 | 分批执行、人工 Gate、证据化验证 |  | 已完成 |

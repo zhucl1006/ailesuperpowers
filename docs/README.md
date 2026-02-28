@@ -23,6 +23,7 @@
 - `docs/templates/g2-design-review-checklist.md`- G2 設計審查清單（PM/QA/開發負責人協作門禁）
 - `docs/modules/aile-skill-mapping.md`- 團隊自定義 `aile-*` Skill 與原 Skill 的映射與增強點
 - `docs/guides/JIRA-MCP-INTEGRATION.md`- Jira MCP 整合指南（工具契約、環境變數與安全約束）
+- `docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`- Google Drive 同步指南（產品路由、歷史版本策略、權限失敗兜底）
 - `docs/plans/PILOT-STORY-REPORT.md`- Aile 工作流試點報告模板（端到端演練記錄）
 
 ### 模組文檔

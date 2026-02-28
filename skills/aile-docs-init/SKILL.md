@@ -1028,6 +1028,40 @@ docs/api/api-spec.md（从代码生成）
 4. 提取认证和授权逻辑
 5. 生成 API 文档（可以是 OpenAPI/Swagger 格式）
 
+### 4.9 同步文档到 Google Drive（Aile 团队规范）
+
+若环境提供 `google-drive` Skill，文档生成后必须执行云端同步。目录路由遵循：`docs-templates/google-drive-sync-integration.md`。
+
+**强制执行规则：**
+- Google Drive 相关操作（查找目录、创建目录、重命名历史文件、上传新文件、清理旧版本）必须全部通过 `google-drive` Skill 执行。
+- 禁止自行编写脚本、直接调用 Drive API 或使用未约定的第三方方法操作云盘。
+- 禁止用全局名称搜索根目录；必须从固定根目录 ID（Aile/AiPool）开始逐层定位 `02-功能規格/[工程名字]/specs|modules|guides|database|api`。
+- 每次上传后必须校验文件父目录是否为目标目录 ID；若不一致，判定为失败并转人工补传，不得报成功。
+
+1. 先分析判断产品归属（结合需求描述、现有文档、工程命名）：
+   - 判断为 Aile：同步到 `公用云端硬碟/NewAile文件/02-功能規格/[工程名字]`
+   - 判断为 AiPool：同步到 `公用云端硬碟/AiPool文件/02-功能規格/[工程名字]`
+   - 无法确定：先询问用户确认目标目录
+2. `[工程名字]` 默认取当前工作目录名；如果用户明确指定工程名，优先使用用户输入
+3. 同步范围：
+   - 默认候选：`docs/**/*.md`，明确排除 `docs/plans/**`
+   - 必须先分析文件是否属于“规格文件”（需求/架构/模块/API/数据库/工程规范等）；仅“是”才同步
+   - 已知目录按固定位置同步：
+     - `docs/specs/**/*.md` -> `.../[工程名字]/specs`
+     - `docs/modules/**/*.md` -> `.../[工程名字]/modules`
+     - `docs/guides/**/*.md` -> `.../[工程名字]/guides`
+     - `docs/database/**/*.md` -> `.../[工程名字]/database`
+     - `docs/api/**/*.md` -> `.../[工程名字]/api`
+   - `docs/` 下其他目录：若判定为规格文件，保留相对目录结构同步到 `.../[工程名字]/{relative-dir}`
+4. 同名文件策略：
+   - 旧文件改名为历史版本
+   - 上传新文件
+   - 历史版本仅保留最近 5 个
+5. 如果上传失败（无权限/目录不可见/账号无效）：
+   - 输出失败原因
+   - 提示用户确认 `google-drive` Skill 登录账号是否正确，并检查共享盘访问权限
+   - 降级为“本地文档生成完成 + 人工补传待办”
+
 ---
 
 ## Phase 5: 审查确认（两种模式共用）
@@ -1053,6 +1087,10 @@ docs/api/api-spec.md（从代码生成）
 ○ docs/database/MIGRATIONS.md             # 迁移记录（占位符）
 ○ docs/api/api-spec.md                    # API 文档（占位符）
 ✓ docs/plans/                             # 计划目录（空）
+
+Google Drive 同步结果:
+- specs: 已同步 / 待人工补传
+- modules: 已同步 / 待人工补传
 ```
 
 **模式 B（从代码回补）：**
@@ -1072,6 +1110,10 @@ docs/api/api-spec.md（从代码生成）
 ✓ docs/plans/                             # 计划目录（空）
 
 注意：所有文档都基于代码分析生成，已标注信息来源。
+
+Google Drive 同步结果:
+- specs: 已同步 / 待人工补传
+- modules: 已同步 / 待人工补传
 ```
 
 ### 5.2 逐一审查
