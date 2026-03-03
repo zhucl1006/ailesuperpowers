@@ -21,6 +21,20 @@ description: 面向团队工作流的写计划技能（阶段2）。在开发前
 
 假設他們是一位熟練的開發人員，但對我們的工具集或問題領域幾乎一無所知。假設他們不太瞭解良好的測試設計。
 
+## 工作流程概览
+
+```
+项目初始化：project-docs-init（创建文档）
+      ↓
+需求分析：aile-requirement-analysis（结构化需求分析  + 更新文档）
+      ↓
+计划制定：aile-writing-plans（设计 + 计划）
+      ↓
+执行开发：aile-executing-plans 或 aile-subagent-dev（按计划执行 + 人工检查点）
+      ↓
+交付总结：aile-delivery-report（整理交付材料 + 回链 Story）
+```
+
 ## 何时使用
 
 在以下情形使用：

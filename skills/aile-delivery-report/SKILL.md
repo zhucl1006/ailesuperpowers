@@ -18,7 +18,19 @@ description: 面向团队工作流的交付报告技能（阶段4）。生成 PR
 - PR 必须声明验证项（测试/构建等）
 -（可选）自动把 PR 链接回写 Jira，并流转状态
 
+## 工作流程概览
 
+```
+项目初始化：project-docs-init（创建文档）
+      ↓
+需求分析：aile-requirement-analysis（结构化需求分析  + 更新文档）
+      ↓
+计划制定：aile-writing-plans（设计 + 计划）
+      ↓
+执行开发：aile-executing-plans 或 aile-subagent-dev（按计划执行 + 人工检查点）
+      ↓
+交付总结：aile-delivery-report（整理交付材料 + 回链 Story）
+```
 ## 输出契约
 
 PR Description 必须使用模板：`docs-templates/stage3-pr-description-template.md`。

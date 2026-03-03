@@ -13,7 +13,19 @@ description: 面向团队工作流的需求接入技能（阶段2）。读取 Ji
 ## 概述
 
 本技能用于阶段 2 的第一步：把 Jira Story 的输入（需求描述、UI 示意、约束）转成可用于计划与设计的结构化材料。
+## 工作流程概览
 
+```
+项目初始化：project-docs-init（创建文档）
+      ↓
+需求分析：aile-requirement-analysis（结构化需求分析  + 更新文档）
+      ↓
+计划制定：aile-writing-plans（设计 + 计划）
+      ↓
+执行开发：aile-executing-plans 或 aile-subagent-dev（按计划执行 + 人工检查点）
+      ↓
+交付总结：aile-delivery-report（整理交付材料 + 回链 Story）
+```
 ## Skill流程
 
 **理解這個想法：**
