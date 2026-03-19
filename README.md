@@ -69,7 +69,7 @@ Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`
 | `aile-docs-init` | 项目启动前/文档治理 | 新项目建文档，或已有代码回补文档 | 项目需求或现有代码库 | 完整项目文档体系（PRD/SAD/开发指南等） |
 | `aile-requirement-analysis` | 阶段2 | 接入 Jira Story，澄清需求与风险 | Story 描述、AC、UI 示意 | `docs/plans/{Story-Key}/analysis.md` |
 | `aile-pencil-design` | 阶段2 | Story 涉及 UI/交互变更 | `analysis.md`、状态矩阵、交互路径 | `docs/plans/{Story-Key}/design.pen` + `analysis.md` UI 章节 |
-| `aile-writing-plans` | 阶段2 | 需要把需求转成可执行任务 | Story-Key、`analysis.md`、UI 方案 | `docs/plans/{Story-Key}/plan.md` |
+| `aile-writing-plans` | 阶段2 | 需要把需求转成可执行任务 | Story-Key、现有文档、当前代码、`analysis.md`（如有） | `docs/plans/{Story-Key}/plan.md` |
 | `aile-executing-plans` | 阶段3 | 按计划分批执行并设置人工检查点 | `plan.md` | 分批实现与验证结果（按任务推进） |
 | `aile-subagent-dev` | 阶段3 | 用户明确要求使用 subagent，且任务可按职责/文件边界拆分 | `analysis.md`、选定计划文件 | Codex subagent 编排执行 + Task Package 派工 + 双阶段审查 |
 | `aile-delivery-report` | 阶段4 | 提交 PR 前统一交付材料 | Story-Key、计划/设计引用、验证结果 | PR Description（模板化）+ 可选 Jira 回写 |
@@ -87,7 +87,8 @@ Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`
 - 用途：把 Story 输入转成结构化需求分析。
 - 触发语句示例：
   - `请使用 aile-requirement-analysis 处理 ABC-123`
-- 输出要求：必须写入 `docs/plans/{Story-Key}/analysis.md`，包含需求理解、风险、隐含需求、可测试 AC 初稿。
+- 输出要求：必须写入 `docs/plans/{Story-Key}/analysis.md`，包含需求理解、风险、隐含需求、可测试 AC 初稿，以及“档案系统回补建议”。
+- 边界要求：本阶段只产出分析文件，不修改代码、测试或档案系统文档。
 
 ### 3) `aile-pencil-design`
 
@@ -104,6 +105,8 @@ Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`
 - 触发语句示例：
   - `请使用 aile-writing-plans 为 ABC-123 生成 plan.md`
 - 输出要求：`plan.md` 需覆盖任务拆解、测试用例、验收标准、执行顺序与状态管理。
+- 上下文要求：优先使用 `analysis.md`；若不存在或不完整，也要结合 Story、文档与当前代码继续生成计划，并显式标注假设与风险。
+- 承接要求：若 `analysis.md` 已确认并包含“档案系统回补建议”，计划中必须将其转成明确执行任务，供后续阶段真实回补。
 
 ### 5) `aile-executing-plans`
 

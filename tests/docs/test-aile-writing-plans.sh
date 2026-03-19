@@ -3,7 +3,7 @@
 set -euo pipefail
 
 skill_file="skills/aile-writing-plans/SKILL.md"
-template_file="docs/templates/stage2-analysis-template.md"
+template_file="skills/aile-writing-plans/docs-templates/stage2-plan-template.md"
 
 if [ ! -f "$skill_file" ]; then
   echo "MISSING: $skill_file" >&2
@@ -34,7 +34,7 @@ if ! rg -n "docs/plans/\{Story-Key\}/plan\.md" "$skill_file" >/dev/null; then
 fi
 
 # Context contract markers
-for pattern in "analysis\\.md" "主上下文文件" "Jira Story 描述" "不负责\\*\\*创建 Jira Sub-task"; do
+for pattern in "analysis\\.md" "优先上下文文件" "Jira Story 描述" "当前代码" "不负责\\*\\*创建 Jira Sub-task" "上下文降级规则" "降级模式" "计划阶段补齐" "档案系统回补任务" "档案系统回补建议"; do
   if ! rg -n "$pattern" "$skill_file" >/dev/null; then
     echo "FAIL: missing context marker [$pattern] in $skill_file" >&2
     exit 1
@@ -55,7 +55,7 @@ for pattern in "整体进度" "任务状态总览" "执行记录" "待开始"; d
   fi
 done
 
-for pattern in "执行状态管理" "整体进度" "任务状态总览" "执行记录"; do
+for pattern in "前置檢查" "任務看板" "檔案系統回補任務" "執行記錄"; do
   if ! rg -n "$pattern" "$template_file" >/dev/null; then
     echo "FAIL: missing status marker [$pattern] in $template_file" >&2
     exit 1

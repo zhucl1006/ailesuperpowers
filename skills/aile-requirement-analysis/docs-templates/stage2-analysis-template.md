@@ -1,6 +1,6 @@
 # 阶段 2：分析报告（analysis.md）模板
 
-> 目标：产出 `docs/plans/{Story-Key}/analysis.md`，作为阶段 2 输入与 AI 执行入口。
+> 目标：产出 `docs/plans/{Story-Key}/analysis.md`，作为阶段 2 的分析基线与后续计划输入。
 
 > Jira Story: {Story-Key}
 > 创建日期: YYYY-MM-DD
@@ -11,6 +11,7 @@
 ## 使用说明
 
 - 本文件仅用于**分析报告**，不包含排期、任务状态跟踪、执行日志。
+- 本阶段只产出 `analysis.md`，不修改业务代码、测试代码、规格文档、模块文档。
 - 所有 AC 与测试用例应可直接用于 QA 验收。
 
 ---
@@ -96,20 +97,25 @@
 
 ---
 
-## 7. AI 执行指引
+## 7. 档案系统回补建议
 
-- 推荐执行顺序：先 AC 与测试，再实现，最后回归。
-- 开发约束：遵循 KISS / YAGNI / DRY / SOLID。
-- 质量门禁：必须执行 RED-GREEN-REFACTOR（TDD）。
-- 变更边界：仅修改本 Story 范围内文件，禁止无关重构。
-- 人工介入点：需求不清、跨系统依赖、验收口径冲突时立即暂停并升级。
+- 是否建议后续回补：是 / 否
+- 建议回补文件：
+  - `docs/specs/...`
+  - `docs/modules/...`
+  - `docs/guides/...`
+- 回补原因：
+- 优先级：高 / 中 / 低
+- 执行阶段：`aile-writing-plans` / `aile-executing-plans`
+
+> 说明：本阶段只记录建议，不执行任何文档修改或归档动作。
 
 ---
 
-## 8. Jira 关联
+## 8. 后续阶段建议
 
 - Story Key：{Story-Key}
-- Epic / 上级需求：
-- 关联链接（PRD/SAD/设计稿/测试单）：
-- Jira Comment 回写内容摘要：
-- 需同步的 Jira 字段：AC / 子任务 / 标签 / 状态
+- 是否需要 Pencil 设计：是 / 否
+- 是否建议后续拆子任务：否 / 是（需用户确认）
+- 是否需要准备 Jira Comment 草稿：否 / 是
+- 说明：

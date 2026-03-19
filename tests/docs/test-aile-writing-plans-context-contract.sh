@@ -23,14 +23,21 @@ fi
 
 skill_file="skills/aile-writing-plans/SKILL.md"
 for pattern in \
-  "主上下文文件：" \
+  "优先上下文文件：" \
   "docs/plans/\\{Story-Key\\}/analysis\\.md" \
   "本技能\\*\\*不负责\\*\\*创建 Jira Sub-task" \
-  "若 .*analysis\\.md.* 缺失" \
   "读取 Jira Story 描述、AC、附件链接" \
-  "读取 .*docs/plans/\\{Story-Key\\}/analysis\\.md" \
+  "读取 .*docs/plans/\\{Story-Key\\}/analysis\\.md.*如存在" \
+  "当前代码" \
   "若 Story 描述与 .*analysis\\.md.* 冲突" \
-  "不负责.*创建 Jira Sub-task"; do
+  "不负责.*创建 Jira Sub-task" \
+  "上下文降级规则" \
+  "降级模式" \
+  "不得停止" \
+  "计划阶段补齐" \
+  "档案系统回补任务" \
+  "档案系统回补建议" \
+  "转写为可执行计划任务"; do
   if ! rg -n "$pattern" "$skill_file" >/dev/null; then
     echo "FAIL: missing pattern [$pattern] in $skill_file" >&2
     exit 1
@@ -45,10 +52,12 @@ fi
 guide_file="docs/guides/JIRA-MCP-INTEGRATION.md"
 for pattern in \
   "aile-writing-plans.*不负责创建 Sub-task" \
-  "主上下文：.*analysis\\.md" \
+  "优先上下文：.*analysis\\.md" \
   "不负责：" \
   "调用 .*jira_create_issue" \
-  "自动更新 Jira 状态"; do
+  "自动更新 Jira 状态" \
+  "analysis\\.md.*缺失.*允许继续生成计划" \
+  "当前代码作用"; do
   if ! rg -n "$pattern" "$guide_file" >/dev/null; then
     echo "FAIL: missing pattern [$pattern] in $guide_file" >&2
     exit 1
@@ -56,13 +65,13 @@ for pattern in \
 done
 
 mapping_file="docs/modules/aile-skill-mapping.md"
-if ! rg -n "读取 Story 描述 \+ .*analysis\\.md" "$mapping_file" >/dev/null; then
+if ! rg -n "读取 Story 描述、现有文档与当前代码" "$mapping_file" >/dev/null; then
   echo "FAIL: missing updated context wording in $mapping_file" >&2
   exit 1
 fi
 
 command_file="commands/aile-write-plan.md"
-for pattern in "读取 Jira Story 描述与 docs/plans/\\{Story-Key\\}/analysis\\.md" "产出 docs/plans/\\{Story-Key\\}/plan\\.md"; do
+for pattern in "读取 Jira Story 描述、现有文档与当前代码" "docs/plans/\\{Story-Key\\}/analysis\\.md.*优先继承" "docs/plans/\\{Story-Key\\}/plan\\.md"; do
   if ! rg -n "$pattern" "$command_file" >/dev/null; then
     echo "FAIL: missing command wording [$pattern] in $command_file" >&2
     exit 1

@@ -1,12 +1,11 @@
 # Google Drive 同步集成指南（Aile）
 
-> 目的：为 `aile-requirement-analysis` 与 `aile-docs-init` 提供统一的云端归档契约，避免路径规则散落在多个 Skill 中。  
-> 说明：若 Skill 运行环境无法访问项目级 `docs/guides/`，请改用 Skill 目录内副本：`skills/aile-requirement-analysis/docs-templates/google-drive-sync-integration.md` 与 `skills/aile-docs-init/docs-templates/google-drive-sync-integration.md`。
+> 目的：为 `aile-docs-init` 提供统一的云端归档契约，避免路径规则散落在多个 Skill 中。  
+> 说明：若 Skill 运行环境无法访问项目级 `docs/guides/`，请改用 Skill 目录内副本：`skills/aile-docs-init/docs-templates/google-drive-sync-integration.md`。
 
 ## 1. 适用范围
 
 - 适用 Skill：
-  - `aile-requirement-analysis`（模块文档回填后同步）
   - `aile-docs-init`（`specs/modules` 产出后同步）
 - 依赖：已安装并可调用 `google-drive` Skill（来源：`sanjay3290/ai-skills`）
 
@@ -48,17 +47,7 @@
 - 只清理历史文件，不删除当前最新文件。
 - 不允许“直接覆盖导致丢失历史”。
 
-## 4. `aile-requirement-analysis` 同步契约
-
-当按单个 Story 做需求分析时：
-
-1. 在 `analysis.md` 输出“是否需要回补规格文件（是/否）”及回补文件清单。
-2. 若判定为“是”，先回补本次 Story 相关规格文件。
-3. 默认候选 `docs/**/*.md`，排除 `docs/plans/**`，仅同步判定为规格文件且本次已回补的文件。
-4. 已知目录按固定映射（`specs/modules/guides/database/api`），其他目录按相对路径落位。
-5. 应用“同名文件版本轮替”策略（保留最近 5 版）。
-
-## 5. `aile-docs-init` 同步契约
+## 4. `aile-docs-init` 同步契约
 
 文档生成完成后：
 
@@ -73,7 +62,7 @@
 4. `docs/` 下其他目录：若判定为规格文件，保留相对目录结构同步到 `.../[工程名字]/{relative-dir}`。
 5. 所有上传动作均应用“同名文件版本轮替”策略（保留最近 5 版）。
 
-## 6. 权限失败与降级策略
+## 5. 权限失败与降级策略
 
 若调用 `google-drive` Skill 失败或无目录访问权限：
 

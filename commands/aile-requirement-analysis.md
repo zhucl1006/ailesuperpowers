@@ -1,5 +1,5 @@
 ---
-description: Aile 阶段2需求接入。读取 Jira Story，输出结构化需求摘要与风险，必要时回写 Jira 评论。
+description: Aile 阶段2需求接入。读取 Jira Story，输出结构化需求摘要与风险，并产出 `docs/plans/{Story-Key}/analysis.md`；不负责代码修改与档案回补执行。
 disable-model-invocation: true
 ---
 
