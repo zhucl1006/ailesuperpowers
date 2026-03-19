@@ -1,6 +1,6 @@
 ---
 name: aile-subagent-dev
-description: 面向团队工作流的子代理开发技能（阶段3）。基于已批准的计划，按任务派发子代理实现，并执行“规格合规→代码质量”双阶段审查，必要时同步 Jira 子任务状态。
+description: 面向团队工作流的子代理开发技能（阶段3）。在用户明确要求使用 Codex subagents 执行已批准计划，且任务适合按职责或文件边界拆分时使用。
 ---
 
 # Aile：子代理驱动开发（aile-subagent-dev）
@@ -8,297 +8,289 @@ description: 面向团队工作流的子代理开发技能（阶段3）。基于
 ## 来源原 Skill
 
 - 来源：superpowers 子代理开发能力（已迁移为 aile-only）
-- 策略：保留“实现→规格审查→质量审查”双阶段循环，并对齐团队 Jira 流转。
+- 团队改写：重构为面向 Codex subagent 的执行技能，明确输入为 `analysis.md` + 选定计划文件，并由主线程负责编排、审查与汇总
+
 
 ## 概述
 
-在团队流程中，本技能用于阶段 3 的任务执行：
+本技能用于团队阶段 3 的计划执行，但它不是“默认执行模式”。
 
-- 输入：`docs/plans/{Story-Key}/analysis.md` 和`docs/plans/{Story-Key}/plan.md` 中的任务拆解
-- 输出：按任务完成代码实现与验证，并通过双阶段审查把关
+- 输入：`docs/plans/{Story-Key}/analysis.md` + 选定的计划文件
+- 输出：按计划完成实现、验证、双阶段审查与最终汇总
+- 角色分工：主线程做控制器；Codex subagent 负责实现、核对、审查等可拆分工作
 
-**核心原則：** 每個任務新鮮的子代理+兩階段審查（規格然後質量）=高質量，快速迭代
+核心原则：
+
+- 必须同时读取 `analysis.md` 与计划文件，不能只看 `plan.md`
+- 只有用户明确要求使用 subagent 模式时，才派发 Codex subagents
+- 控制器负责读取上下文、拆任务、判定并行/串行、汇总结果
+- 子代理只接收与自己任务相关的 Task Package，不自行通读整份计划
+- 先做规格合规审查，再做代码质量审查
+
+## Codex Subagents 对齐
+
+本技能对齐 Codex subagent 官方能力与使用原则：
+
+- 子代理适用于复杂、可拆分、可并行的执行任务
+- 是否真的派发 subagent，取决于主线程是否明确发起
+- 内置角色优先使用 `worker`、`explorer`、`default`
+- 主线程负责 orchestration，子代理负责 bounded task
+
+因此，本技能的前提是：
+
+- 用户明确要求使用 `aile-subagent-dev`
+- 或用户明确要求“用 subagent / 子代理模式执行计划”
+- 当前任务已经有阶段 2 产物：`analysis.md` 与计划文件
+
 ## 工作流程概览
 
 ```
-项目初始化：project-docs-init（创建文档）
+项目初始化：aile-docs-init（创建文档）
       ↓
-需求分析：aile-requirement-analysis（结构化需求分析  + 更新文档）
+需求分析：aile-requirement-analysis（输出 analysis.md）
       ↓
-计划制定：aile-writing-plans（设计 + 计划）
+计划制定：aile-writing-plans（输出 plan.md / plan-{n}.md）
       ↓
-执行开发：aile-executing-plans 或 aile-subagent-dev（按计划执行 + 人工检查点）
+执行开发：aile-executing-plans 或 aile-subagent-dev
       ↓
-交付总结：aile-delivery-report（整理交付材料 + 回链 Story）
+交付总结：aile-delivery-report
 ```
-## 何時使用
 
 ## 何时使用
 
-- 你已经有“已批准”的阶段 2 计划（`analysis.md`）
+适用场景：
 
-```dot
-digraph when_to_use {
-    "Have implementation plan?" [shape=diamond];
-    "Tasks mostly independent?" [shape=diamond];
-    "Stay in this session?" [shape=diamond];
-    "aile-subagent-dev" [shape=box];
-    "aile-executing-plans" [shape=box];
-    "Manual execution or brainstorm first" [shape=box];
+- 已经有可执行的 `analysis.md` 与计划文件
+- 用户明确要求使用 Codex subagent 模式
+- 计划可以按职责、模块或文件边界拆分
+- 主线程更适合做控制器，而不是亲自串行完成全部编码细节
 
-    "Have implementation plan?" -> "Tasks mostly independent?" [label="yes"];
-    "Have implementation plan?" -> "Manual execution or brainstorm first" [label="no"];
-    "Tasks mostly independent?" -> "Stay in this session?" [label="yes"];
-    "Tasks mostly independent?" -> "Manual execution or brainstorm first" [label="no - tightly coupled"];
-    "Stay in this session?" -> "aile-subagent-dev" [label="yes"];
-    "Stay in this session?" -> "aile-executing-plans" [label="no - parallel session"];
-}
-```
+不适用场景：
 
-**與。執行計劃（平行會議）：**
-- 同一會話（無上下文切換）
-- 每個任務都有新的子代理（無上下文污染）
-- 每項任務後進行兩階段審查：首先是規範合規性，然後是程式碼品質
-- 更快的迭代（任務之間沒有人在循環）
+- 用户没有明确要求 subagent 模式
+- 任务强耦合、顺序依赖非常强，不适合拆分
+- `analysis.md` 或计划文件缺失
+- 只是小改动，主线程直接完成更简单
 
-## 流程
+## 与 `aile-executing-plans` 的边界
 
-```dot
-digraph process {
-    rankdir=TB;
+两者都属于阶段 3 的“执行计划”技能，但执行模式不同。
 
-    subgraph cluster_per_task {
-        label="Per Task";
-        "Dispatch implementer subagent (./implementer-prompt.md)" [shape=box];
-        "Implementer subagent asks questions?" [shape=diamond];
-        "Answer questions, provide context" [shape=box];
-        "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
-        "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [shape=box];
-        "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
-        "Implementer subagent fixes spec gaps" [shape=box];
-        "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [shape=box];
-        "Code quality reviewer subagent approves?" [shape=diamond];
-        "Implementer subagent fixes quality issues" [shape=box];
-        "Mark task complete in TodoWrite" [shape=box];
-    }
+**`aile-executing-plans`：**
 
-    "Read plan, extract all tasks with full text, note context, create TodoWrite" [shape=box];
-    "More tasks remain?" [shape=diamond];
-    "Dispatch final code reviewer subagent for entire implementation" [shape=box];
-    "Use aile-delivery-report" [shape=box style=filled fillcolor=lightgreen];
+- 单主代理模式
+- 主线程按批次推进任务
+- 更适合强耦合、串行依赖明显、需要频繁人工检查点的计划
 
-    "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (./implementer-prompt.md)";
-    "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
-    "Implementer subagent asks questions?" -> "Answer questions, provide context" [label="yes"];
-    "Answer questions, provide context" -> "Dispatch implementer subagent (./implementer-prompt.md)";
-    "Implementer subagent asks questions?" -> "Implementer subagent implements, tests, commits, self-reviews" [label="no"];
-    "Implementer subagent implements, tests, commits, self-reviews" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)";
-    "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
-    "Spec reviewer subagent confirms code matches spec?" -> "Implementer subagent fixes spec gaps" [label="no"];
-    "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [label="re-review"];
-    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="yes"];
-    "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" -> "Code quality reviewer subagent approves?";
-    "Code quality reviewer subagent approves?" -> "Implementer subagent fixes quality issues" [label="no"];
-    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
-    "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
-    "Mark task complete in TodoWrite" -> "More tasks remain?";
-    "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use aile-delivery-report";
-}
-```
+**`aile-subagent-dev`：**
 
-## 提示模板
+- Codex subagent 编排模式
+- 主线程读取 `analysis.md` + 计划文件，构造 Task Package 后派发子代理
+- 更适合复杂、可按职责拆分、存在并行空间的计划
 
-- `./implementer-prompt.md`- 調度實施者子代理
-- `./spec-reviewer-prompt.md`- 派遣規範合規審查員子代理
-- `./code-quality-reviewer-prompt.md`- 派遣代碼質量審核員子代理
+选择原则：
 
-## 示例工作流程
+- 主线程自己分批做完更直接：用 `aile-executing-plans`
+- 需要“控制器 + 多子代理”协作执行：用 `aile-subagent-dev`
 
-```
-You: I'm using Subagent-Driven Development to execute this plan.
+## 输入契约
 
-[Read plan file once: docs/plans/feature-plan.md]
-[Extract all 5 tasks with full text and context]
-[Create TodoWrite with all tasks]
+### 必读文件
 
-Task 1: Hook installation script
+1. `docs/plans/{Story-Key}/analysis.md`
+2. 计划文件：
+   - 若用户明确指定：使用指定文件
+   - 若存在 `plan-{序号}.md`：使用最大序号文件
+   - 否则使用 `plan.md`
 
-[Get Task 1 text and context (already extracted)]
-[Dispatch implementation subagent with full task text + context]
+### 控制器读取要求
 
-Implementer: "Before I begin - should the hook be installed at user or system level?"
+- 控制器在开始阶段一次性读取 `analysis.md` 与选定计划文件
+- 从两份文件中提取需求边界、验收标准、任务拆解、依赖关系、验证命令
+- 之后通过 Task Package 向子代理分发上下文，避免每个子代理重复读完整文档
 
-You: "User level (~/.config/superpowers/hooks/)"
+## Subagent 角色选择
 
-Implementer: "Got it. Implementing now..."
-[Later] Implementer:
-  - Implemented install-hook command
-  - Added tests, 5/5 passing
-  - Self-review: Found I missed --force flag, added it
-  - Committed
+默认优先考虑 Codex 内置角色：
 
-[Dispatch spec compliance reviewer]
-Spec reviewer: ✅ Spec compliant - all requirements met, nothing extra
+- `worker`
+  - 负责编码、修复、补测试、执行验证
+  - 默认承担 implementer
+- `explorer`
+  - 负责只读分析、规格核对、证据提取、差异核查
+  - 默认承担 spec reviewer
+- `default`
+  - 负责综合判断、跨任务质量评审、最终汇总
+  - 默认承担 code quality reviewer 或 final reviewer
 
-[Get git SHAs, dispatch code quality reviewer]
-Code reviewer: Strengths: Good test coverage, clean. Issues: None. Approved.
+如果当前系统还提供其他可用角色或自定义 subagent，控制器必须先分析其能力，再决定是否使用。不要机械地固定只用三种内置角色。
 
-[Mark Task 1 complete]
+角色选择流程：
 
-Task 2: Recovery modes
+1. 先识别当前系统可用的 subagent 角色
+2. 判断每个角色的主要能力边界：
+   - 是否擅长写代码
+   - 是否擅长只读分析
+   - 是否擅长综合评审
+   - 是否有特定领域能力，例如前端、测试、架构、数据、性能
+3. 将任务类型映射到最合适的角色
+4. 若没有更合适的系统角色，再回退到内置 `worker` / `explorer` / `default`
+5. 角色变了，职责边界不能变：
+   - implementer 负责实现与验证
+   - spec reviewer 负责规格核查
+   - code quality reviewer 负责质量审查
 
-[Get Task 2 text and context (already extracted)]
-[Dispatch implementation subagent with full task text + context]
+选择原则：
 
-Implementer: [No questions, proceeds]
-Implementer:
-  - Added verify/repair modes
-  - 8/8 tests passing
-  - Self-review: All good
-  - Committed
+- 写代码、改测试、修缺陷：优先 `worker`
+- 读代码、对照 `analysis.md` / 计划文件核查实现：优先 `explorer`
+- 做综合结论、全局质量判断、最终收口：优先 `default`
+- 若系统存在更专业的角色，且其能力边界与任务更匹配，则优先选“更匹配的系统角色”
 
-[Dispatch spec compliance reviewer]
-Spec reviewer: ❌ Issues:
-  - Missing: Progress reporting (spec says "report every 100 items")
-  - Extra: Added --json flag (not requested)
+示例：
 
-[Implementer fixes issues]
-Implementer: Removed --json flag, added progress reporting
+- 如果系统有专门的测试 reviewer 或 QA reviewer，可优先承担质量审查
+- 如果系统有架构 reviewer，可优先处理跨模块设计一致性检查
+- 如果系统有前端/后端/数据方向 implementer，可按任务域派发给对应角色
 
-[Spec reviewer reviews again]
-Spec reviewer: ✅ Spec compliant now
+若仓库后续提供自定义 subagent，可替换默认角色，但职责边界不能变。
 
-[Dispatch code quality reviewer]
-Code reviewer: Strengths: Solid. Issues (Important): Magic number (100)
+## Task Package 规范
 
-[Implementer fixes]
-Implementer: Extracted PROGRESS_INTERVAL constant
+每次派发子代理前，控制器都要构造最小充分的 Task Package，至少包含：
 
-[Code reviewer reviews again]
-Code reviewer: ✅ Approved
+- 任务编号与标题
+- 任务目标与范围
+- 来自 `analysis.md` 的需求边界、风险、验收标准
+- 来自计划文件的任务步骤、依赖、约束
+- 允许修改的文件范围
+- 禁止修改或需谨慎处理的区域
+- 验证命令与完成判定
+- 前序任务产物或依赖说明
 
-[Mark Task 2 complete]
+Task Package 原则：
 
-...
-
-[After all tasks]
-[Dispatch final code-reviewer]
-Final reviewer: All requirements met, ready to merge
-
-Done!
-```
-
-## 優點
-
-**與。手動執行：**
-- 子代理自然地遵循TDD
-- 每個任務都有新鮮的背景（沒有混淆）
-- 並行安全（子代理不幹擾）
-- 子代理可以提問（工作之前和工作期間）
-
-**與。執行計劃：**
-- 同一會話（無切換）
-- 持續進步（無需等待）
-- 自動審查檢查點
-
-**效率提升：**
-- 無檔案讀取開銷（控制器提供全文）
-- 控制器準確地規劃所需的上下文
-- 子代理預先取得完整資訊
-- 問題在工作開始之前（而不是之後）出現
-
-**質量門：**
-- 移交前自我審查發現問題
-- 兩階段審查：規範合規性，然後是代碼質量
-- 審查循環確保修復確實有效
-- 符合規範可防止過度建設/建設不足
-- 代碼品質確保實施良好
-
-**成本：**
-- 更多子代理呼叫（每個任務的實施者 + 2 個審閱者）
-- 控制器做更多的準備工作（預先提取所有任務）
-- 審查循環添加迭代
-- 但儘早發現問題（比稍後調試便宜）
-
-## 危險信號
-
-**絕不：**
-- 在使用者明確同意的情況下開始在 main/master 分支上實施
-- 跳過審查（規範合規性或程式碼品質）
-- 繼續處理未解決的問題
-- 並行調度多個實施子代理（衝突）
-- 讓子代理程式讀取計劃檔案（改為提供全文）
-- 跳過場景設定上下文（子代理程式需要了解任務適合的位置）
-- 忽略子代理問題（在繼續之前回答）
-- 接受規範合規性“足夠接近”（規範審核者發現問題=未完成）
-- 跳過審核循環（審核者發現問題 = 實施者修復 = 再次審核）
-- 讓實施者自我審查取代實際審查（兩者都需要）
-- **在規範合規性為✅**之前開始代碼質量審查（順序錯誤）
-- 當任一審核有未解決的問題時移至下一個任務
-
-**如果子代理提出問題：**
-- 回答清楚、完整
-- 如果需要，提供額外的上下文
-- 不要急於實施
-
-**如果審閱者發現問題：**
-- 實施者（同一子代理）修復它們
-- 審稿者再次審稿
-- 重複直至獲得批准
-- 不要跳過重新審核
-
-**如果子代理任務失敗：**
-- 調度帶有特定說明的修復子代理
-- 不要嘗試手動修復（上下文污染）
-
-## 一體化
-
-**所需的工作流程技能：**
-- **超級能力：aile-git-worktrees** - 必需：在開始之前設置隔離的工作區
-- **超級大國：aile-writing-plans** - 創建該技能執行的計劃
-- **aile-code-review** - 審閱者子代理方案的方案碼審閱模板
-- **超級大國：aile-delivery-report** - 在完成所有任務後完成開發
-
-**子代理應使用：**
-- **超級能力：aile-tdd** - 子代理程式遵循TDD執行每項任務
-
-**替代工作流程：**
-- **aile-executing-plans** - 用於端點會話而不是相同會話執行
-
+- 给子代理“做事所需的完整上下文”，但不要塞整份计划
+- 控制器负责裁剪上下文，避免任务漂移
+- 并行任务必须具备清晰的文件边界或写入边界
 
 ## 执行流程
 
-**开始时声明：**“我正在使用 aile-subagent-dev 技能按计划执行任务。”
+### 第 1 步：装载上下文
 
-1. 读取 `analysis.md`，提取所有任务全文与依赖
-2. 建立任务列表（以依赖顺序执行）
-3. 对每个任务：
-   - 若任务状态为 BLOCKED，先执行“阻塞任务处理”（见下文），仅在解除阻塞后进入实现
-   - 派发 implementer 子代理：只给任务全文、相关文件路径、验证命令、约束（必须 TDD）
-   - implementer 完成后：自检（是否按计划、是否验证、是否有多做/少做）
-   - 派发 spec reviewer：核对“计划/AC/测试”一致性
-   - 派发 code quality reviewer：核对质量与安全
-   - 有问题则返工并复审，直到通过
-4. 所有任务完成后：派发一次全量代码审查（可选），进入交付流程
+1. 读取 `analysis.md`
+2. 选择并读取计划文件
+3. 校验两份文件是否一致：
+   - 需求边界是否冲突
+   - 任务是否覆盖验收标准
+   - 验证命令是否足够支撑完成判定
+4. 建立执行看板，标记依赖、可并行项、阻塞项
 
-## 阻塞任务处理
+### 第 2 步：决定调度策略
 
-遇到 BLOCKED 状态的任务时：
+按以下顺序判断：
 
-1. 使用 `jira_get_issue` 读取当前任务的 `blocked-by` Link。
-2. 检查被依赖 Issue 的状态：
-   - 若依赖 Issue 仍未完成：跳过当前任务，继续执行其他非阻塞任务。
-   - 若依赖 Issue 已完成：
-     - 读取其 Comment，提取接口契约/事件定义等关键信息。
-     - 将契约信息写入当前任务上下文（供 implementer 与 reviewer 使用）。
-     - 将当前任务状态从 BLOCKED 流转为 IN PROGRESS。
-     - 按本技能流程进入 TDD 开发与后续双阶段审查。
+1. 是否存在前置依赖
+2. 是否会写同一文件集
+3. 是否适合并行
+4. 每个任务应该使用哪种 subagent，以及是否存在比内置角色更匹配的系统角色
+
+若多个实现任务会修改同一文件集，则必须串行。
+
+### 第 3 步：派发 implementer
+
+对每个可执行任务：
+
+1. 构造 Task Package
+2. 派发 `worker` implementer
+3. 要求 implementer：
+   - 若存在阻塞疑问，先提问再动手
+   - 仅实现任务范围内内容
+   - 运行计划要求的验证
+   - 完成后先做自检，再回报结果
+
+### 第 4 步：规格合规审查
+
+implementer 回报后，控制器派发 spec reviewer：
+
+- 默认使用 `explorer`
+- 对照 `analysis.md`、计划文件、验收标准、测试要求进行核查
+- 必须直接阅读代码与验证结果，不信任 implementer 的口头回报
+
+若发现问题：
+
+- 退回同一 implementer 修复
+- 修复后重新做 spec review
+- 直到规格合规通过
+
+### 第 5 步：代码质量审查
+
+规格合规通过后，再派发 code quality reviewer：
+
+- 默认使用 `default`
+- 若只是窄范围差异核查，也可使用 `explorer`
+- 关注可维护性、一致性、测试有效性、实现复杂度、边界处理
+
+若发现问题：
+
+- 退回 implementer 修复
+- 修复后重新做质量审查
+- 直到质量通过
+
+### 第 6 步：任务完成与收口
+
+每个任务通过后：
+
+- 更新执行看板状态
+- 记录验证证据
+- 决定是否释放后续依赖任务
+
+所有任务完成后：
+
+- 视复杂度决定是否派发一次 final reviewer
+- 汇总实现结果、验证结果、残余风险
+- 进入 `aile-delivery-report`
+
+## 子代理提示模板
+
+建议按以下模板派发：
+
+- [implementer-prompt.md](/Users/zhuchunlei/work/01_code/ailesuperpowers/skills/aile-subagent-dev/implementer-prompt.md)
+- [spec-reviewer-prompt.md](/Users/zhuchunlei/work/01_code/ailesuperpowers/skills/aile-subagent-dev/spec-reviewer-prompt.md)
+- [code-quality-reviewer-prompt.md](/Users/zhuchunlei/work/01_code/ailesuperpowers/skills/aile-subagent-dev/code-quality-reviewer-prompt.md)
+
+这些模板面向 `spawn_agent` / `send_input` 的消息编排，而不是旧式“让子代理自己读文件”的做法。
+
+## 相关技能
+
+- `aile-writing-plans`：生成 `analysis.md` 与计划文件
+- `aile-executing-plans`：非 subagent 的计划执行模式
+- `aile-delivery-report`：执行完成后的交付收尾
 
 ## 危险信号
 
-- 在未通过规格合规审查前进入代码质量审查
-- 子代理未运行验证就声称完成
-- 任务间并发派发多个实现子代理导致冲突
-- 让子代理通读整份计划导致上下文膨胀与偏航
+绝不要这样做：
+
+- 用户没有明确要求 subagent，却擅自派发 Codex subagents
+- 只读取计划文件，不读取 `analysis.md`
+- 让子代理自己通读 `analysis.md` 或整份计划文件
+- 在规格合规通过前提前进入代码质量审查
+- 并行派发多个会写同一文件集的 implementer
+- 子代理未运行验证就宣称完成
+- 用 implementer 自检替代正式审查
+- 跳过返工后的复审
+
+遇到以下情况应停止并重新判断：
+
+- `analysis.md` 与计划文件冲突
+- 任务无法拆出清晰边界
+- 并行拆分会造成明显冲突
+- 验证命令无法证明任务完成
+
+## 记住
+
+- `aile-subagent-dev` 是“Codex subagent 执行模式”，不是默认执行模式
+- 主线程是控制器，负责读取 `analysis.md` 与计划文件、构造 Task Package、派发与汇总
+- 子代理应拿到定制上下文，而不是自己去读完整文档
+- 规格合规先于代码质量
+- 与 `aile-executing-plans` 的差别，不在“是否执行计划”，而在“是否使用 Codex subagent 编排”

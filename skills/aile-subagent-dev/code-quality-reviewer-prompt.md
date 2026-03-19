@@ -1,20 +1,47 @@
-# 代碼質量審核員提示模板
+# 代码质量审查子代理提示模板
 
-分派代碼質量審核員子代理時使用此模板。
+默认用于派发具备综合质量评审能力的 Codex 子代理，通常是 `default`；若系统存在更匹配的质量审查角色，可优先使用该角色。若只是窄范围只读核查，也可改用 `explorer`。
 
-**目的：** 驗證實施是否建置良好（乾淨、經過測試、可維護）
+适用场景：
 
-**僅在規格合規性審核通過後纔出貨。 **
+- 在规格合规通过后评估实现质量
+- 关注可维护性、测试有效性、边界处理与复杂度
+- 为主线程提供是否可以收口的综合判断
 
+```text
+Agent type: default（或更匹配的质量审查角色）
+
+Message:
+你是负责代码质量审查的 Codex subagent。
+
+前提：规格合规审查已经通过。你现在评估的是实现质量，而不是重新定义需求。
+
+## Review Package
+
+- 任务编号：[Task ID]
+- 任务标题：[Task Title]
+- 任务目标：[Goal]
+- 验收标准摘要：[Acceptance Criteria]
+- 关键实现说明：[Implementation Summary]
+- 重点文件：[Relevant Files]
+- 验证结果：[Validation Evidence]
+- 规格审查结论：[Spec Review Result]
+
+## 审查要求
+
+请重点检查：
+
+1. 代码是否清晰、可维护、符合仓库既有模式
+2. 测试是否真正验证行为，而不是只验证 mock 或表面路径
+3. 是否存在明显的复杂度膨胀、重复逻辑或脆弱边界处理
+4. 是否有可以阻塞交付的风险
+
+如发现问题，请按严重程度归类，并给出文件/行号证据。
+
+## 回报格式
+
+- 结论：`✅ 通过` 或 `❌ 需修复`
+- 优点：
+- 问题清单：
+- 残余风险：
 ```
-Task tool (superpowers:code-reviewer):
-  Use template at aile-code-review/code-reviewer.md
-
-  WHAT_WAS_IMPLEMENTED: [from implementer's report]
-  PLAN_OR_REQUIREMENTS: Task N from [plan-file]
-  BASE_SHA: [commit before task]
-  HEAD_SHA: [current commit]
-  DESCRIPTION: [task summary]
-```
-
-**代碼審查員返回：** 優勢、問題（關鍵/重要/次要）、評估

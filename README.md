@@ -71,7 +71,7 @@ Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`
 | `aile-pencil-design` | 阶段2 | Story 涉及 UI/交互变更 | `analysis.md`、状态矩阵、交互路径 | `docs/plans/{Story-Key}/design.pen` + `analysis.md` UI 章节 |
 | `aile-writing-plans` | 阶段2 | 需要把需求转成可执行任务 | Story-Key、`analysis.md`、UI 方案 | `docs/plans/{Story-Key}/plan.md` |
 | `aile-executing-plans` | 阶段3 | 按计划分批执行并设置人工检查点 | `plan.md` | 分批实现与验证结果（按任务推进） |
-| `aile-subagent-dev` | 阶段3 | 任务可拆分，适合子代理并行/串行执行 | `analysis.md`、`plan.md` | 任务实现 + 双阶段审查（规格合规→代码质量） |
+| `aile-subagent-dev` | 阶段3 | 用户明确要求使用 subagent，且任务可按职责/文件边界拆分 | `analysis.md`、选定计划文件 | Codex subagent 编排执行 + Task Package 派工 + 双阶段审查 |
 | `aile-delivery-report` | 阶段4 | 提交 PR 前统一交付材料 | Story-Key、计划/设计引用、验证结果 | PR Description（模板化）+ 可选 Jira 回写 |
 
 ### 1) `aile-docs-init`
@@ -114,13 +114,23 @@ Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`
 
 ### 6) `aile-subagent-dev`
 
-- 用途：通过子代理执行任务并做双阶段审查。
+- 用途：在用户明确要求时，使用 Codex subagent 执行已批准计划，并通过控制器编排完成双阶段审查。
 - 触发语句示例：
   - `请使用 aile-subagent-dev 执行 ABC-123`
+- 输入要求：
+  - 必须同时读取 `docs/plans/{Story-Key}/analysis.md`
+  - 必须选择执行计划文件：用户指定优先，否则 `plan-{n}.md` 优先于 `plan.md`
+- 角色要求：
+  - 主线程负责读取上下文、拆任务、构造 Task Package、派发与汇总
+  - 默认角色为 `worker` / `explorer` / `default`
+  - 如果 Codex 系统里存在更合适的角色，必须先分析能力边界，再选择更匹配的角色
 - 审查顺序：
   1. 规格合规审查
   2. 代码质量审查
   3. 不通过则回到实现修复并复审
+- 与 `aile-executing-plans` 的区别：
+  - `aile-executing-plans`：单主代理分批执行
+  - `aile-subagent-dev`：Codex subagent 编排执行
 
 ### 7) `aile-delivery-report`
 
@@ -138,7 +148,7 @@ Google Drive 同步规则参考：`docs/guides/GOOGLE-DRIVE-SYNC-INTEGRATION.md`
 1) 请使用 aile-requirement-analysis 处理 ABC-123，并输出 analysis.md
 2) 请使用 aile-pencil-design 为 ABC-123 产出 design.pen（如果无 UI 变更请明确说明）
 3) 请使用 aile-writing-plans 为 ABC-123 生成 plan.md
-4) 请使用 aile-subagent-dev 按 plan.md 执行开发并完成审查
+4) 请使用 aile-subagent-dev 读取 analysis.md 与选定计划文件，按 subagent 模式执行开发并完成审查
 5) 请使用 aile-delivery-report 生成 PR 描述并附验证清单
 ```
 

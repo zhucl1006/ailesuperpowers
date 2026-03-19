@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 測試：aile-subagent-dev 技能
-# 驗證技能可被辨識，且流程順序符合規範
+# 验证技能可被辨识，且契约符合最新规范
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -30,31 +30,18 @@ run_claude_with_retry() {
 echo "=== 測試：aile-subagent-dev 技能 ==="
 echo ""
 
-# 測試 1：驗證技能可被載入
-echo "測試 1：技能載入..."
+# 测试 1：验证技能可被载入，并识别为 Codex subagent 模式
+echo "测试 1：技能载入..."
 
-output=$(run_claude_with_retry "請說明 aile-subagent-dev 技能，並簡述關鍵步驟（需提到計畫讀取或任務提取）。" 120)
+output=$(run_claude_with_retry "请说明 aile-subagent-dev 技能，并简述它的核心模式。回答中需要提到 Codex subagent，以及 analysis.md 和 plan.md（或选定计划文件）。" 120)
 
-if assert_contains "$output" "aile-subagent-dev\|Subagent-Driven Development\|Subagent Driven\|子代理驅動\|子代理" "技能已被辨識"; then
+if assert_contains "$output" "aile-subagent-dev\|Codex\|subagent\|子代理" "技能已被辨识"; then
     : # pass
 else
     exit 1
 fi
 
-if assert_contains "$output" "Load Plan\|read.*plan\|extract.*tasks\|讀.*計畫\|读取.*计划\|提取.*任務\|提取.*任务" "提到計畫讀取/任務提取"; then
-    : # pass
-else
-    exit 1
-fi
-
-echo ""
-
-# 測試 2：驗證流程順序
-echo "測試 2：流程順序..."
-
-output=$(run_claude_with_retry "在 aile-subagent-dev 中，規範合規審查與程式碼品質審查哪個先做？請明確說明順序。" 120)
-
-if assert_contains "$output" "spec.*compliance.*code.*quality\|規範.*合規.*程式碼.*品質\|規格.*合規.*代碼.*質量\|规格.*合规.*代码.*质量\|规范.*合规.*代码.*质量\|先.*規範.*後.*程式碼\|先.*规范.*后.*代码\|先做.*后做" "先規範合規，再程式碼品質"; then
+if assert_contains "$output" "analysis\.md\|分析文件\|计划文件\|plan\.md" "提到 analysis 与计划文件"; then
     : # pass
 else
     exit 1
@@ -62,45 +49,18 @@ fi
 
 echo ""
 
-# 測試 3：驗證自我審查要求
-echo "測試 3：自我審查要求..."
+# 测试 2：验证与 aile-executing-plans 的边界
+echo "测试 2：技能边界..."
 
-output=$(run_claude_with_retry "aile-subagent-dev 是否要求實作者先做自我審查？應該檢查哪些內容？" 120)
+output=$(run_claude_with_retry "aile-subagent-dev 和 aile-executing-plans 有什么区别？请直接说明前者为什么是 subagent 模式，后者为什么不是。" 120)
 
-if assert_contains "$output" "self-review\|self review\|自我審查\|自我审查\|自我检查\|自查" "提到自我審查"; then
+if assert_contains "$output" "aile-executing-plans" "提到对比技能"; then
     : # pass
 else
     exit 1
 fi
 
-if assert_contains "$output" "completeness\|Completeness\|完整性\|是否完整\|是否遺漏\|是否遗漏\|遺漏\|遗漏\|覆蓋\|覆盖" "提到完整性檢查"; then
-    : # pass
-else
-    exit 1
-fi
-
-echo ""
-
-# 測試 4：驗證計畫只讀一次
-echo "測試 4：計畫讀取效率..."
-
-output=$(run_claude_with_retry "根據 aile-subagent-dev 的流程，控制者讀取計畫檔是「一次」還是「多次」？請先明確回答一次/多次，再說明時機。" 120)
-
-if assert_contains "$output" "once\|one time\|single\|一次\|單次\|只讀一次\|只读取一次\|僅一次\|仅一次\|ONCE" "計畫只讀一次"; then
-    : # pass
-else
-    exit 1
-fi
-
-# Allow mentioning other skills (e.g. aile-executing-plans) that read plans multiple times.
-# Only fail if it claims the controller reads the plan multiple times in SDD.
-if assert_not_contains "$output" "控制者.*多次\|控制者.*兩次\|控制者.*两次\|控制者.*2次\|控制者.*二次\|讀取計畫檔.*多次\|读取计划.*多次\|controller.*multiple\|read.*plan.*multiple" "不是多次讀取"; then
-    : # pass
-else
-    exit 1
-fi
-
-if assert_contains "$output" "Step 1\|beginning\|start\|Load Plan\|第一步\|開始\|开始\|開頭\|起始\|起始階段\|开始阶段" "在開始階段讀取"; then
+if assert_contains "$output" "subagent\|子代理\|控制器\|主线程\|单主代理\|单主代理模式" "说明模式差异"; then
     : # pass
 else
     exit 1
@@ -108,37 +68,24 @@ fi
 
 echo ""
 
-# 測試 5：驗證規範審查者的懷疑態度
-echo "測試 5：規範審查者心態..."
+# 测试 3：验证子代理角色选择
+echo "测试 3：角色选择..."
 
-output=$(run_claude_with_retry "在 aile-subagent-dev 的規範審查中，若原則是「不要信任實作者回報，需獨立驗證並直接閱讀程式碼」，審查者應持什麼態度？" 120)
+output=$(run_claude_with_retry "在 aile-subagent-dev 中，implementer、spec reviewer、code quality reviewer 通常分别用哪类 Codex subagent？" 120)
 
-if assert_contains "$output" "not trust\|don't trust\|skeptical\|verify.*independently\|suspiciously\|不信任\|保持懷疑\|保持怀疑\|懷疑\|怀疑\|獨立驗證\|独立验证" "審查者保持懷疑並獨立驗證"; then
+if assert_contains "$output" "worker" "实现者使用 worker"; then
     : # pass
 else
     exit 1
 fi
 
-if assert_contains "$output" "read.*code\|inspect.*code\|verify.*code\|讀.*程式碼\|讀取.*程式碼\|阅读.*代码\|读取.*代码\|直接读取.*代码\|查看.*代码\|检查.*代码\|檢查.*程式碼" "審查者會直接看程式碼"; then
+if assert_contains "$output" "explorer" "规格审查使用 explorer"; then
     : # pass
 else
     exit 1
 fi
 
-echo ""
-
-# 測試 6：驗證審查循環
-echo "測試 6：審查循環要求..."
-
-output=$(run_claude_with_retry "在 aile-subagent-dev 中，如果審查者發現問題會怎麼處理？是一次性審查還是循環？" 120)
-
-if assert_contains "$output" "loop\|again\|repeat\|until.*approved\|until.*compliant\|循環\|循环\|反覆\|反复\|直到.*通過\|直到.*通过\|直到.*合規\|直到.*合规\|直至.*批准\|直到.*批准" "提到審查循環"; then
-    : # pass
-else
-    exit 1
-fi
-
-if assert_contains "$output" "implementer.*fix\|fix.*issues\|實作者.*修復\|实施者.*修复" "實作者會修復問題"; then
+if assert_contains "$output" "default\|explorer" "质量审查使用 default 或 explorer"; then
     : # pass
 else
     exit 1
@@ -146,18 +93,12 @@ fi
 
 echo ""
 
-# 測試 7：驗證任務上下文提供方式
-echo "測試 7：任務上下文提供..."
+# 测试 4：验证会分析系统其他角色并做匹配
+echo "测试 4：系统角色匹配..."
 
-output=$(run_claude_with_retry "在 aile-subagent-dev 中，控制者如何把任務資訊給實作者子代理？是要求讀檔，還是直接提供完整文本？" 120)
+output=$(run_claude_with_retry "如果 Codex 系统里除了 worker、explorer、default 之外，还有其他可用角色，aile-subagent-dev 应该怎么选？是固定用内置角色，还是先分析能力后选择更匹配的角色？" 120)
 
-if assert_contains "$output" "provide.*directly\|full.*text\|paste\|include.*prompt\|直接提供\|完整文本\|完整任務\|直接貼上" "直接提供完整任務內容"; then
-    : # pass
-else
-    exit 1
-fi
-
-if assert_contains "$output" "don't make subagent read file\|改為提供全文\|改为提供全文\|避免.*讀取.*檔案\|避免.*读取.*文件\|無檔案讀取開銷\|无文件读取开销" "不要求子代理自行讀檔"; then
+if assert_contains "$output" "先分析\|能力匹配\|更匹配的角色\|可用角色\|系统角色\|自定义" "会分析系统角色并做能力匹配"; then
     : # pass
 else
     exit 1
@@ -165,12 +106,30 @@ fi
 
 echo ""
 
-# 測試 8：驗證 worktree 前置要求
-echo "測試 8：worktree 前置要求..."
+# 测试 5：验证控制器同时读取 analysis 与计划，并构造 Task Package
+echo "测试 5：上下文装载与任务派发..."
 
-output=$(run_claude_with_retry "根據 aile-subagent-dev 文件「一體化/所需工作流程技能」段落，開始前是否必須 aile-git-worktrees（worktree）？請直接回答並列出前置技能。" 120)
+output=$(run_claude_with_retry "根据 aile-subagent-dev，主线程在开始阶段要读取哪些文件？之后是让子代理自己读整份文件，还是由控制器构造 Task Package 再派发？" 120)
 
-if assert_contains "$output" "aile-git-worktrees\|worktree\|git 工作樹\|工作樹" "提到 worktree 要求"; then
+if assert_contains "$output" "analysis\.md" "提到 analysis.md"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_contains "$output" "plan\.md\|计划文件\|plan-" "提到计划文件"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_contains "$output" "Task Package\|任务包\|由控制器构造\|主线程构造" "提到 Task Package"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_contains "$output" "不是让子代理自己读\|不让子代理自己读\|由控制器构造\|避免每个子代理重复读完整文档\|绝不要这样做" "明确由控制器派发而非子代理通读"; then
     : # pass
 else
     exit 1
@@ -178,12 +137,12 @@ fi
 
 echo ""
 
-# 測試 9：驗證 main 分支警示
-echo "測試 9：main 分支警示..."
+# 测试 6：验证审查顺序
+echo "测试 6：审查顺序..."
 
-output=$(run_claude_with_retry "在 aile-subagent-dev 中，可以直接在 main 分支開始實作嗎？" 120)
+output=$(run_claude_with_retry "在 aile-subagent-dev 中，规格合规审查与代码质量审查哪个先做？请明确说明先后顺序。" 120)
 
-if assert_contains "$output" "worktree\|feature.*branch\|not.*main\|never.*main\|avoid.*main\|don't.*main\|consent\|permission\|不要.*main\|不可.*main\|避免.*main\|不能.*main\|主分支\|主干\|需.*同意\|需要.*許可" "警告不要直接在 main 實作"; then
+if assert_contains "$output" "先.*规格.*后.*代码质量\|先.*合规.*后.*质量\|spec.*before.*quality\|规格合规.*代码质量" "先规格合规，再代码质量"; then
     : # pass
 else
     exit 1
@@ -191,4 +150,36 @@ fi
 
 echo ""
 
-echo "=== aile-subagent-dev 技能測試全部通過 ==="
+# 测试 7：验证审查循环
+echo "测试 7：审查循环..."
+
+output=$(run_claude_with_retry "在 aile-subagent-dev 中，如果规格审查或代码质量审查发现问题，会如何处理？是一轮结束，还是返工后复审直到通过？" 120)
+
+if assert_contains "$output" "返工\|复审\|循环\|直到通过\|直到合规\|until.*pass\|until.*approved" "提到返工复审循环"; then
+    : # pass
+else
+    exit 1
+fi
+
+echo ""
+
+# 测试 8：验证相关技能链路
+echo "测试 8：相关技能..."
+
+output=$(run_claude_with_retry "aile-subagent-dev 前后通常和哪些技能衔接？至少说出它前面的计划技能和后面的交付技能。" 120)
+
+if assert_contains "$output" "aile-writing-plans" "提到前置计划技能"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_contains "$output" "aile-delivery-report" "提到后置交付技能"; then
+    : # pass
+else
+    exit 1
+fi
+
+echo ""
+
+echo "=== aile-subagent-dev 技能测试全部通过 ==="
