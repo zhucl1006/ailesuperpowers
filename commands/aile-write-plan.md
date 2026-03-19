@@ -1,5 +1,5 @@
 ---
-description: Aile 阶段2写计划。基于 Story 产出 docs/plans/{Story-Key}/analysis.md，并细化 AC 与任务；启用 Jira MCP 时自动创建 Sub-task。
+description: Aile 阶段2写计划。读取 Jira Story 描述与 docs/plans/{Story-Key}/analysis.md，基于 analysis 产出 docs/plans/{Story-Key}/plan.md。
 disable-model-invocation: true
 ---
 

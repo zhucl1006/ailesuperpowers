@@ -34,23 +34,36 @@
 
 ## 5. 典型调用时机
 
-- `aile-requirement-analysis`：读取 Story，写入需求摘要 Comment
-- `aile-writing-plans`：创建 Sub-task、回写细化后的 Acceptance Criteria
-- `aile-tdd` / `aile-subagent-dev`：更新 Sub-task 状态
+- `aile-requirement-analysis`：读取 Story，生成需求摘要 Comment 的 ADF 内容；仅在工具支持 ADF 时执行回填
+- `aile-writing-plans`：读取 Story 描述与 `analysis.md`，产出 `plan.md`；不负责创建 Sub-task
+- `aile-subagent-dev`：更新 Sub-task 状态
 - `aile-delivery-report`：写入 PR 链接 Comment，流转 Story 状态
 
-### 5.1 `aile-writing-plans` 的 Sub-task 创建契约
+### 5.0 `aile-requirement-analysis` 的 Comment 回填契约
 
-- 创建时机：任务拆解完成后、交接开发前
-- 调用 Tool：`jira_create_issue`
-- 最小字段：
-  - `summary`：任务标题
-  - `description`：任务说明与验收要点
-  - `parent`：父 Story Key
-  - `labels`：至少包含 Story-Key 与阶段标签
-  - `assignee`：可选
-- 结果回填：在 `analysis.md` 记录每个任务的 Sub-task Key 或失败原因
-- 降级规则：若 MCP 调用失败，必须标记“未创建（原因：xxx，需人工补录）”
+- 职责边界：只做分析与 Comment 回填，不创建 Sub-task
+- 缺失 / gap / 补漏类单据：只输出分析，禁止创建 Sub-task
+- Comment 格式：必须先生成 ADF payload
+- 工具限制处理：
+  - 若运行环境支持 ADF Comment：可执行自动回填
+  - 若运行环境仅支持 Markdown Comment：禁止自动回填，降级为“本地保留 ADF 内容 + 人工提交”
+- 必须在 `analysis.md` 中记录：
+  - 单据类型判断
+  - 子任务建议与决策
+  - ADF payload 或未回填原因
+
+### 5.1 `aile-writing-plans` 的本地计划契约
+
+- 职责边界：读取 Story 描述与 `analysis.md`，生成 `docs/plans/{Story-Key}/plan.md`
+- 主上下文：`analysis.md`
+- Story 描述作用：
+  - 校验 `analysis.md` 是否偏离原需求
+  - 补足分析文件未覆盖的背景
+- 不负责：
+  - 创建 Jira Sub-task
+  - 调用 `jira_create_issue`
+  - 自动更新 Jira 状态
+- 若 `analysis.md` 缺失或与 Story 冲突：停止生成计划，提示先补齐或修正分析文件
 
 ## 6. 失败处理（必须）
 

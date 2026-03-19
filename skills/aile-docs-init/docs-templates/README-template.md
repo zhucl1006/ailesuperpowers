@@ -28,7 +28,8 @@ docs/
 ├── plans/                             # 开发计划（由 AI 生成和执行）
 ├── specs/                             # 规格文档（必读）
 │   ├── PRD.md                         # 产品需求文档
-│   └── SAD.md                         # 软件架构设计文档
+│   ├── SAD.md                         # 软件架构设计文档
+│   └── CODEBASE-ANALYSIS.md           # 代码仓分析详单（模式 B 必读）
 ├── guides/                            # 开发指南
 │   ├── AI-DEVELOPMENT-GUIDE.md        # AI 开发指南（TDD）
 │   ├── TESTING-GUIDE.md               # 测试规范
@@ -52,6 +53,7 @@ docs/
 |------|------|----------|
 | [PRD.md](./specs/PRD.md) | 产品需求文档 | 了解产品功能和业务需求时 |
 | [SAD.md](./specs/SAD.md) | 软件架构设计文档 | 开发任何功能前（必读） |
+| [CODEBASE-ANALYSIS.md](./specs/CODEBASE-ANALYSIS.md) | 代码仓分析详单 | 模式 B 回补、排查入口、理解代码边界时 |
 
 ### 2. 开发指南（guides/）
 
@@ -75,6 +77,7 @@ docs/
 |------------|------------|
 | 理解产品功能和业务逻辑 | [PRD.md](./specs/PRD.md) |
 | 理解整体架构和技术选型 | [SAD.md](./specs/SAD.md) |
+| 追踪代码入口、模块文件和配置项 | [CODEBASE-ANALYSIS.md](./specs/CODEBASE-ANALYSIS.md) |
 | 开发新功能模块 | [SAD.md](./specs/SAD.md) → [AI-DEVELOPMENT-GUIDE.md](./guides/AI-DEVELOPMENT-GUIDE.md) |
 {TASK_TYPE_QUICK_LINKS}
 | 编写测试用例 | [AI-DEVELOPMENT-GUIDE.md](./guides/AI-DEVELOPMENT-GUIDE.md) + [TESTING-GUIDE.md](./guides/TESTING-GUIDE.md) |
@@ -111,8 +114,9 @@ docs/
 
 1. **查阅 PRD.md**：理解业务需求和功能边界
 2. **查阅 SAD.md**：理解整体架构和模块划分
-3. **查阅 AI-DEVELOPMENT-GUIDE.md**：遵循 TDD 开发流程和代码规范
-4. **确认相关模块文档**：查看 `modules/` 目录中的具体实现规范
+3. **查阅 CODEBASE-ANALYSIS.md**：理解入口、目录职责、配置与现有风险
+4. **查阅 AI-DEVELOPMENT-GUIDE.md**：遵循 TDD 开发流程和代码规范
+5. **确认相关模块文档**：查看 `modules/` 目录中的具体实现规范
 
 ### 开发时必须
 
@@ -135,11 +139,11 @@ docs/
 
 | 变更类型 | 需要更新的文档 |
 |----------|----------------|
-| 新增功能模块 | PRD.md + SAD.md + 对应模块文档 |
+| 新增功能模块 | PRD.md + SAD.md + CODEBASE-ANALYSIS.md + 对应模块文档 |
 | 修改 API 接口 | api-spec.md |
 | 修改数据库 Schema | SCHEMA.md + MIGRATIONS.md |
 | 新增第三方服务集成 | SAD.md + 对应服务文档 |
-| 调整架构设计 | SAD.md |
+| 调整架构设计 | SAD.md + CODEBASE-ANALYSIS.md |
 | 更新测试规范 | TESTING-GUIDE.md |
 | 部署流程变更 | DEPLOYMENT-GUIDE.md |
 

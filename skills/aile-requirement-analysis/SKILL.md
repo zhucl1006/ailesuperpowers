@@ -1,6 +1,6 @@
 ---
 name: aile-requirement-analysis
-description: 面向团队工作流的需求接入技能（阶段2）。读取 Jira Story 的需求与 UI 示意，结构化输出需求摘要/风险/隐含需求，并（可选）回写 Jira Comment。
+description: 面向团队工作流的需求接入技能（阶段2）。读取 Jira Story 的需求与 UI 示意，结构化输出需求摘要/风险/隐含需求，并在需要时生成 ADF 格式的 Jira 评论内容。
 ---
 
 # Aile：需求接入（aile-requirement-analysis）
@@ -13,6 +13,13 @@ description: 面向团队工作流的需求接入技能（阶段2）。读取 Ji
 ## 概述
 
 本技能用于阶段 2 的第一步：把 Jira Story 的输入（需求描述、UI 示意、约束）转成可用于计划与设计的结构化材料。
+
+**边界约束：**
+- 本技能只负责分析、澄清、结构化输出与规格回补评估
+- 本技能默认**不创建 Jira Sub-task**
+- 若判断后续可能需要拆子任务，只能在分析结果中给出建议，并提示用户决定是否进入 `aile-writing-plans`
+- 若当前 Jira 单属于“缺失 / gap / 小范围补漏 / 缺陷修补”类型，分析阶段**禁止**创建子任务，只输出分析结论与建议
+
 ## 工作流程概览
 
 ```
@@ -56,7 +63,7 @@ description: 面向团队工作流的需求接入技能（阶段2）。读取 Ji
 
 **實施（如果繼續）：**
 - 問：“準備好實施了嗎？”
-- 使用超能力：aile-git-worktrees 創建隔離的工作區
+- 建議先建立隔離的工作區後再進入實作
 - 使用超能力：aile-writing-plans 制定詳細的實施計劃
 
 ## Skill關鍵原則
@@ -81,21 +88,95 @@ description: 面向团队工作流的需求接入技能（阶段2）。读取 Ji
    - 用户路径/核心交互
    - 验收条件（AC）初稿：将业务表述改写成可测试条目
    - 隐含需求清单（例如权限、空状态、错误状态、性能/兼容性）
-   - 建议的阶段 2 下一步：是否需要 Pencil 设计、是否需要拆子任务
+   - 建议的阶段 2 下一步：是否需要 Pencil 设计、是否建议后续拆子任务
+   - 子任务决策记录：`默认不创建 / 用户已明确要求创建 / 缺失类单据禁止创建`
 3. 必须输出“规格回补评估”：
    - 是否需要回补规格文件：是/否
    - 回补文件清单（若为“是”，列出文件路径与回补原因）
 4. 若评估为“需要回补”，必须先回补对应规格文件，再触发 Google Drive 同步
 5. 目录路由与上传策略遵循：`docs-templates/google-drive-sync-integration.md`
+6. Jira 回填内容若要写入 Comment，必须先生成 **ADF（Atlassian Document Format）** 结构；若当前工具链不支持直接提交 ADF，禁止自动回填，降级为“输出 ADF 内容 + 提示人工提交”
+
+## 子任务边界（必须遵守）
+
+1. `aile-requirement-analysis` 阶段**禁止**创建 Jira Sub-task
+2. 子任务创建职责属于 `aile-writing-plans`，不是本技能
+3. 对于“缺失 / gap / 补漏 / 小型修补”类 Jira 单：
+   - 只做分析
+   - 不拆子任务
+   - 不提示自动创建
+4. 对于复杂需求，如果分析后判断“后续可能需要拆子任务”：
+   - 只能输出“建议后续在 `aile-writing-plans` 阶段创建”
+   - 必须提示用户确认
+   - 默认答案为**不创建**
+5. 未获得用户明确授权前，不得调用任何 `jira_create_issue` / `jira_batch_create_issues` 能力
+
+## Jira 单类型判断（用于子任务建议）
+
+优先按以下信号判断是否属于“缺失类单据”：
+
+- Issue Type / 标签 / 自定义字段明确标记为：`缺失`、`gap`、`bugfix`、`补漏`、`修补`
+- 标题或描述呈现“补一个缺口 / 修一个缺失项 / 补齐遗漏逻辑”的语义
+- 影响范围单点、边界清晰、无需多角色并行推进
+
+若满足上述条件之一：
+- 结论写为：`本单归类为缺失类单据`
+- 子任务建议写为：`否`
+- 原因写明：`分析阶段仅输出结论与风险，禁止建立子任务`
 
 ## Jira MCP（可选）
 
 若环境提供 Jira MCP Tool（例如 `mcp-atlassian`），按以下步骤执行：
 
 1. 读取 Story：`jira_get_issue`
-2. 将“需求接入摘要”写入 Comment：`jira_add_comment`
+2. 先生成“需求接入摘要”的 **ADF 评论载荷**
+3. 若当前工具链支持提交 ADF Comment：再执行 Jira 回填
+4. 若当前工具链仅支持 Markdown Comment：禁止自动回填，改为在 `analysis.md` 中附上 ADF 内容并提示人工提交
 
 > 注意：凭据（API Token）必须通过环境变量注入，不得写入仓库。
+
+### Jira Comment 回填格式（强制）
+
+需求接入结果若要回填 Jira，必须先组织成 ADF 结构，至少包含：
+
+```json
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "heading",
+      "attrs": { "level": 2 },
+      "content": [{ "type": "text", "text": "[G1] 需求接入摘要" }]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "需求摘要：..." }]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**至少包含的区块：**
+- 需求摘要
+- 风险与隐含需求
+- 规格回补评估
+- 子任务建议与决策
+- 待确认问题
+
+**禁止事项：**
+- 禁止直接把纯 Markdown 文本当成“ADF 格式”宣称已回填
+- 禁止在未确认工具支持 ADF 的情况下调用自动回填并报成功
 
 ## Google Drive 同步（可选，团队推荐启用）
 
@@ -136,9 +217,39 @@ description: 面向团队工作流的需求接入技能（阶段2）。读取 Ji
 
 1. 获取 Story Key
 2. 读取并复述需求（避免理解偏差）
-3. 列出不确定项（一次一个问题，优先多选题）
-4. 产出结构化摘要以及analysis.md分析文件（参考 `docs-templates/stage2-analysis-template.md`）
-5. 输出“规格回补评估”（是否需要回补 + 回补文件清单）
-6. 若需要回补规格文件：先回补文档，再触发 Google Drive 同步
-7. （可选）回写 Jira Comment
-8. （可选）触发 Google Drive 同步，按统一指南执行目录路由、规格判定与历史版本策略
+3. 判断单据类型：是否属于“缺失 / gap / 补漏 / 修补”类
+4. 列出不确定项（一次一个问题，优先多选题）
+5. 产出结构化摘要以及 `analysis.md` 分析文件（参考 `docs-templates/stage2-analysis-template.md`）
+6. 输出“规格回补评估”（是否需要回补 + 回补文件清单）
+7. 输出“子任务建议与决策”：
+   - 默认：`不创建`
+   - 缺失类单据：`禁止创建`
+   - 若复杂需求需要后续拆分：`建议用户确认后，在 aile-writing-plans 阶段处理`
+8. 若需要回补规格文件：先回补文档，再触发 Google Drive 同步
+9. （可选）生成 Jira Comment 的 ADF 内容
+10. （可选）仅在工具明确支持 ADF 时执行 Jira 回填
+11. （可选）触发 Google Drive 同步，按统一指南执行目录路由、规格判定与历史版本策略
+
+## 输出格式补充要求
+
+`analysis.md` 中必须显式包含：
+
+```markdown
+## 子任务建议与决策
+
+- 单据类型：缺失类 / 常规需求 / 待确认
+- 是否建议创建子任务：否 / 是（需用户确认）
+- 当前阶段是否允许创建：否
+- 用户是否已明确授权：否 / 是
+- 说明：...
+```
+
+若需 Jira 回填，还必须在 `analysis.md` 中附上：
+
+````markdown
+## Jira Comment ADF（待回填）
+
+```json
+{ ...ADF payload... }
+```
+````

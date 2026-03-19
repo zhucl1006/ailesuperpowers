@@ -9,7 +9,6 @@ PROMPTS_DIR="$SCRIPT_DIR/prompts"
 
 SKILLS=(
     "aile-requirement-analysis"
-    "aile-tdd"
     "aile-writing-plans"
     "aile-subagent-dev"
     "aile-executing-plans"

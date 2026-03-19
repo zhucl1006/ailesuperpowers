@@ -25,10 +25,8 @@
 - `aile-writing-plans`
 - `aile-executing-plans`
 - `aile-subagent-dev`
-- `aile-tdd`
 - `aile-code-review`
 - `aile-delivery-report`
-- `aile-git-worktrees`
 
 ## 3.1 技能映射與增強
 

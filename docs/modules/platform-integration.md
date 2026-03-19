@@ -54,7 +54,6 @@
 - `commands/aile-requirement-analysis.md`
 - `commands/aile-write-plan.md`
 - `commands/aile-pencil-design.md`
-- `commands/aile-tdd.md`
 - `commands/aile-subagent-dev.md`
 - `commands/aile-code-review.md`
 - `commands/aile-delivery-report.md`

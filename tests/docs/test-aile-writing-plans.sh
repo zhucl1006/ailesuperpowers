@@ -33,9 +33,17 @@ if ! rg -n "docs/plans/\{Story-Key\}/plan\.md" "$skill_file" >/dev/null; then
   exit 1
 fi
 
-# Jira contract marker
-if ! rg -n "jira_create_issue" "$skill_file" >/dev/null; then
-  echo "FAIL: missing Jira Sub-task contract in $skill_file" >&2
+# Context contract markers
+for pattern in "analysis\\.md" "主上下文文件" "Jira Story 描述" "不负责\\*\\*创建 Jira Sub-task"; do
+  if ! rg -n "$pattern" "$skill_file" >/dev/null; then
+    echo "FAIL: missing context marker [$pattern] in $skill_file" >&2
+    exit 1
+  fi
+done
+
+# Must not keep Jira sub-task creation contract
+if rg -n "jira_create_issue|jira_batch_create_issues|Sub-task 创建契约|按任务列表逐条调用|人工补录" "$skill_file" >/dev/null; then
+  echo "FAIL: stale Jira Sub-task contract still present in $skill_file" >&2
   exit 1
 fi
 

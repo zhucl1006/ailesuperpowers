@@ -7,6 +7,24 @@
 
 ---
 
+## 0. 文档说明
+
+### 0.1 文档目标
+
+{DOCUMENT_GOAL}
+
+### 0.2 信息来源与可信度
+
+| 类型 | 来源 | 可信度 | 说明 |
+|------|------|--------|------|
+{SOURCE_TABLE}
+
+### 0.3 架构范围与限制
+
+{ARCHITECTURE_SCOPE_AND_LIMITS}
+
+---
+
 ## 1. 架构概述
 
 ### 1.1 系统概述
@@ -67,11 +85,19 @@
 {SYSTEM_ARCHITECTURE_DIAGRAM}
 ```
 
-### 3.2 架构分层
+### 3.2 代码仓结构视图
+
+{CODEBASE_STRUCTURE_VIEW}
+
+### 3.3 运行时入口与启动链路
+
+{RUNTIME_ENTRY_AND_BOOTSTRAP}
+
+### 3.4 架构分层
 
 {ARCHITECTURE_LAYERS}
 
-### 3.3 数据流向
+### 3.5 数据流向
 
 {DATA_FLOW}
 
@@ -96,6 +122,12 @@
 ### 4.4 模块详细设计
 
 {MODULE_DETAILED_DESIGN}
+
+### 4.5 模块实现映射
+
+| 模块 | 关键目录/文件 | 对外接口 | 关键依赖 | 风险 |
+|------|---------------|----------|----------|------|
+{MODULE_IMPLEMENTATION_MAPPING}
 
 ---
 
@@ -255,57 +287,81 @@
 
 ---
 
-## 13. 第三方集成
+## 13. 配置与环境变量
 
-### 13.1 集成服务列表
+### 13.1 配置矩阵
 
-{THIRD_PARTY_SERVICES}
+| 配置项 / 环境变量 | 使用位置 | 默认值来源 | 是否必填 | 说明 |
+|-------------------|----------|------------|----------|------|
+{CONFIGURATION_MATRIX}
 
-### 13.2 集成架构
+### 13.2 敏感配置与安全注意事项
+
+{SENSITIVE_CONFIGURATION_NOTES}
+
+---
+
+## 14. 第三方集成
+
+### 14.1 集成服务列表
+
+{THIRD_PARTY_INTEGRATIONS}
+
+### 14.2 集成架构
 
 {INTEGRATION_ARCHITECTURE}
 
 ---
 
-## 14. 开发规范
+### 14.3 集成风险与降级策略
 
-### 14.1 代码结构
+{THIRD_PARTY_RISKS_AND_FALLBACKS}
+
+---
+
+## 15. 开发规范
+
+### 15.1 代码结构
 
 {CODE_STRUCTURE}
 
-### 14.2 命名规范
+### 15.2 命名规范
 
 {NAMING_CONVENTIONS}
 
-### 14.3 代码审查规范
+### 15.3 代码审查规范
 
 {CODE_REVIEW_STANDARDS}
 
 ---
 
-## 15. 技术债务与改进
+## 16. 技术债与演进建议
 
-### 15.1 已知技术债务
+### 16.1 当前技术债
 
-{TECHNICAL_DEBT}
+{CURRENT_TECH_DEBT}
 
-### 15.2 改进计划
+### 16.2 改进计划
 
 {IMPROVEMENT_PLAN}
 
+### 16.3 演进路径
+
+{EVOLUTION_PATH}
+
 ---
 
-## 16. 架构演进路线图
+## 17. 架构演进路线图
 
-### 16.1 短期目标（3-6 个月）
+### 17.1 短期目标（3-6 个月）
 
 {SHORT_TERM_GOALS}
 
-### 16.2 中期目标（6-12 个月）
+### 17.2 中期目标（6-12 个月）
 
 {MEDIUM_TERM_GOALS}
 
-### 16.3 长期目标（12+ 个月）
+### 17.3 长期目标（12+ 个月）
 
 {LONG_TERM_GOALS}
 
